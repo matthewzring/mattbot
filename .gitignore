@@ -1,0 +1,11 @@
+﻿# Visual Studio cache/options directory
+/.vs/
+
+# Build results
+Debug/
+Release/
+[Bb]in/
+[Oo]bj/
+
+# Configuration files
+config.json
