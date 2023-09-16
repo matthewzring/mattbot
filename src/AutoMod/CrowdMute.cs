@@ -65,15 +65,21 @@ namespace mattbot.automod
 
             // User is already timed out
             if (((newMessage.Author as IGuildUser).TimedOutUntil != null) && !(((newMessage.Author as IGuildUser).TimedOutUntil - DateTimeOffset.UtcNow).ToString()[0].Equals("-")))
-                 return;
+                return;
+
+            // Check if message is replying to someone
+            StringBuilder builder = new StringBuilder();
+            if (newMessage.Reference is not null)
+                builder.Append(newMessage.ReferencedMessage.Author.Mention).Append(" ");
 
             // Get the contents of the message
             string content;
             string imageurl;
 
-            content = newMessage.Content;
+            builder.Append(newMessage.Content);
             imageurl = newMessage.Attachments?.FirstOrDefault()?.ProxyUrl;
 
+            content = builder.ToString();
             if (content is null && imageurl is null)
                 return;
 

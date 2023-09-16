@@ -64,13 +64,19 @@ namespace mattbot.automod
             if ((newMessage.Timestamp - DateTimeOffset.UtcNow).TotalHours <= -MESSAGE_REPORT_DURATION)
                 return;
 
+            // Check if message is replying to someone
+            StringBuilder builder = new StringBuilder();
+            if (newMessage.Reference is not null)
+                builder.Append(newMessage.ReferencedMessage.Author.Mention).Append(" ");
+
             // Get the contents of the message
             string content;
             string imageurl;
 
-            content = newMessage.Content;
+            builder.Append(newMessage.Content);
             imageurl = newMessage.Attachments?.FirstOrDefault()?.ProxyUrl;
 
+            content = builder.ToString();
             if (content is null && imageurl is null)
                 return;
 

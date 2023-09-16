@@ -70,23 +70,27 @@ namespace mattbot.automod
                 if (gempost.Content.Contains(message.Id.ToString()))
                     return;
 
-            // Allow messages from bots
+            // Check if message is replying to someone
+            StringBuilder builder = new StringBuilder();
+            if (newMessage.Reference is not null)
+                builder.Append(newMessage.ReferencedMessage.Author.Mention).Append(" ");
+
+            // Get the contents of the message
             string content;
             string imageurl;
-            switch (newMessage.Author.IsBot)
+            if (newMessage.Author.IsBot)
             {
-                case true:
-                    content = newMessage.Embeds.Count > 0 ? newMessage.Embeds.Select(x => x.Description).FirstOrDefault() : newMessage.Content;
-                    imageurl = newMessage.Attachments.Count > 0
-                        ? newMessage.Attachments.FirstOrDefault().ProxyUrl
-                        : newMessage.Embeds?.Select(x => x.Image).FirstOrDefault()?.ProxyUrl;
-                    break;
-                default:
-                    content = newMessage.Content;
-                    imageurl = newMessage.Attachments?.FirstOrDefault()?.ProxyUrl;
-                    break;
+                builder.Append(newMessage.Embeds.Count > 0 ? newMessage.Embeds.Select(x => x.Description).FirstOrDefault() : newMessage.Content);
+                imageurl = newMessage.Attachments.Count > 0
+                    ? newMessage.Attachments.FirstOrDefault().ProxyUrl
+                    : newMessage.Embeds?.Select(x => x.Image).FirstOrDefault()?.ProxyUrl;
             }
-
+            else
+            {
+                builder.Append(newMessage.Content);
+                imageurl = newMessage.Attachments?.FirstOrDefault()?.ProxyUrl;
+            }
+            content = builder.ToString();
             if (content is null && imageurl is null)
                 return;
 
@@ -108,13 +112,12 @@ namespace mattbot.automod
                     userHighestRoleColor = filterOutDefault.MaxBy(r => r.Position).Color;
 
                 // Workaround for new username system
-                StringBuilder builder = new StringBuilder();
-                builder.Append(newMessage.Author.Username);
+                StringBuilder author = new StringBuilder();
+                author.Append(newMessage.Author.Username);
                 if (newMessage.Author.Discriminator != "0000")
-                    builder.Append("#").Append(newMessage.Author.Discriminator);
-                string author = builder.ToString();
+                    author.Append("#").Append(newMessage.Author.Discriminator);
 
-                var eb = new EmbedBuilder().WithAuthor(author, newMessage.Author.GetAvatarUrl())
+                var eb = new EmbedBuilder().WithAuthor(author.ToString(), newMessage.Author.GetAvatarUrl())
                                         .WithColor(userHighestRoleColor)
                                         .WithDescription(content + $"\n\n[Jump Link]({newMessage.GetJumpUrl()})")
                                         .WithTimestamp(newMessage.Timestamp);
