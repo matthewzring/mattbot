@@ -1,7 +1,7 @@
 ﻿using Discord.WebSocket;
-using MattBot.Services;
+using mattbot.services;
 
-namespace MattBot.AutoMod
+namespace mattbot.automod
 {
     public class NitroBoosters
     {

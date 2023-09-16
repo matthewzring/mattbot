@@ -1,4 +1,4 @@
-﻿namespace MattBot
+﻿namespace mattbot
 {
     public class Attributes
     {

@@ -1,6 +1,6 @@
 ﻿using Discord.Interactions;
 
-namespace MattBot.Modules.Moderation
+namespace mattbot.modules.moderation
 {
     [EnabledInDm(false)]
     [Group("mod", "Global moderator commands")]

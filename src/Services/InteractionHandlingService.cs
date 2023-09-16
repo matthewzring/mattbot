@@ -2,7 +2,7 @@
 using Discord.Rest;
 using Discord.WebSocket;
 
-namespace MattBot.Services
+namespace mattbot.services
 {
     public class InteractionHandlingService
     {

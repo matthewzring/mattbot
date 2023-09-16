@@ -1,10 +1,10 @@
 ﻿using Discord;
 using Discord.Interactions;
 using Discord.WebSocket;
-using MattBot.Utilities;
+using mattbot.utils;
 using System.Diagnostics;
 
-namespace MattBot.Modules.General
+namespace mattbot.modules.general
 {
     public class PingModule : InteractionModuleBase<SocketInteractionContext>
     {

@@ -1,7 +1,7 @@
 ﻿using Discord.Interactions;
 using Discord.WebSocket;
 
-namespace MattBot.Modules.Moderation
+namespace mattbot.modules.moderation
 {
     public class ReactionRolesModule : InteractionModuleBase<SocketInteractionContext>
     {

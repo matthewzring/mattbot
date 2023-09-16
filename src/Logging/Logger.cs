@@ -1,7 +1,7 @@
 ﻿using Discord.WebSocket;
-using MattBot.Utilities;
+using mattbot.utils;
 
-namespace MattBot.Logging
+namespace mattbot.logging
 {
     public class Logger
     {

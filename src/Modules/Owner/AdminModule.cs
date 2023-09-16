@@ -1,8 +1,8 @@
 ﻿using Discord.Interactions;
 using Discord.WebSocket;
-using MattBot.Utilities;
+using mattbot.utils;
 
-namespace MattBot.Modules.Owner
+namespace mattbot.modules.owner
 {
     [EnabledInDm(false)]
     [Group("admin", "admin commands")]

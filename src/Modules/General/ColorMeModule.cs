@@ -2,7 +2,7 @@
 using Discord.WebSocket;
 using Color = Discord.Color;
 
-namespace MattBot.Modules.General
+namespace mattbot.modules.general
 {
     [CyberPatriot]
     [CCDC]

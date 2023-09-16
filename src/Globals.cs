@@ -9,11 +9,11 @@ global using System.Reflection;
 global using Microsoft.Extensions.Configuration;
 global using Microsoft.Extensions.DependencyInjection;
 global using LiteDB;
-global using MattBot.Logging;
-global using static MattBot.Attributes;
-global using static MattBot.Globals;
+global using mattbot.logging;
+global using static mattbot.Attributes;
+global using static mattbot.Globals;
 
-namespace MattBot
+namespace mattbot
 {
     public class Globals
     {
@@ -27,9 +27,6 @@ namespace MattBot
         // People
         public const ulong OWNER_ID = 349007194768801792;
 
-        // Webhooks
-        public const ulong TOURN_NOTIF_ID = 1107915868207321098;
-
         // Servers
         public const ulong CYBERPATRIOT_ID = 301768361136750592;
         public const ulong FINALISTS_ID = 546405227092508683;
@@ -41,6 +38,11 @@ namespace MattBot
         public const string CHECK = "\u2611\uFE0F"; // ☑️
         public const string X = "\u274C"; // ❌
 
+        // Logs
+        public const string VOICE_JOIN = "<:voicejoin:1110632369414742046>";
+        public const string VOICE_LEAVE = "<:voiceleave:1110632368156463246>";
+        public const string VOICE_CHANGE = "<:voicechange:1110632371495129098>";
+
         // MattCoin
         public const string CONSTRUCTION = "\uD83D\uDEA7"; // 🚧
         public const string SWORD = "\u2694\uFE0F"; // ⚔️
@@ -48,11 +50,6 @@ namespace MattBot
         public const string NITRO = "<:nitro:1091272926881390634>";
         public const string PING = "<:ping:1091272927737036953>";
         public const string MATTCOIN = "<:mattcoin:1110649089122635776>";
-
-        // Logs
-        public const string VOICE_JOIN = "<:voicejoin:1110632369414742046>";
-        public const string VOICE_LEAVE = "<:voiceleave:1110632368156463246>";
-        public const string VOICE_CHANGE = "<:voicechange:1110632371495129098>";
 
         // Gems
         public const int GEM_THRESHOLD = 4;

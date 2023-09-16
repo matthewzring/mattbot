@@ -1,8 +1,8 @@
-﻿using MattBot.Services;
+﻿using mattbot.services;
 using Discord.WebSocket;
-using MattBot.Utilities;
+using mattbot.utils;
 
-namespace MattBot.AutoMod
+namespace mattbot.automod
 {
     public class CrowdMute
     {

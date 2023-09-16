@@ -1,4 +1,4 @@
-﻿namespace MattBot.Utilities
+﻿namespace mattbot.utils
 {
     public class FormatUtil
     {
@@ -13,19 +13,15 @@
 
         public static string formatUser (IUser user)
         {
-            // Workaround for new username system
             if (user.Discriminator == "0000")
                 return filterEveryone($"**{user.Username}**");
-
             return filterEveryone($"**{user.Username}**#{user.Discriminator}");
         }
 
         public static string formatFullUser(IUser user)
         {
-            // Workaround for new username system
             if (user.Discriminator == "0000")
                 return filterEveryone($"**{user.Username}** (ID:{user.Id})");
-
             return filterEveryone($"**{user.Username}**#{user.Discriminator} (ID:{user.Id})");
         }
 

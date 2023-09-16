@@ -1,10 +1,10 @@
-﻿using MattBot.Services;
+﻿using mattbot.services;
 using Discord.Commands;
 using Discord.Interactions;
 using Discord.WebSocket;
-using MattBot.AutoMod;
+using mattbot.automod;
 
-namespace MattBot
+namespace mattbot
 {
     public class MattBot
     {
@@ -28,7 +28,6 @@ namespace MattBot
             });
 
             _services = new ServiceCollection()
-                // Base
                 .AddSingleton(_configuration)
                 .AddSingleton(_client)
                 .AddSingleton<CommandService>()
@@ -36,9 +35,7 @@ namespace MattBot
                 .AddSingleton(x => new InteractionService(x.GetRequiredService<DiscordSocketClient>()))
                 .AddSingleton<InteractionService>()
                 .AddSingleton<InteractionHandlingService>()
-                // Listener
                 .AddSingleton(new Listener(_client))
-                // AutoMod
                 .AddSingleton<Gems>()
                 .AddSingleton<MessageReports>()
                 .AddSingleton<NitroBoosters>()
@@ -56,10 +53,8 @@ namespace MattBot
 
             client.Log += LogAsync;
 
-            // Base
             await _services.GetRequiredService<CommandHandlingService>().InitializeAsync();
             await _services.GetRequiredService<InteractionHandlingService>().InitializeAsync();
-            // AutoMod
             await _services.GetRequiredService<Gems>().InitializeAsync();
             await _services.GetRequiredService<MessageReports>().InitializeAsync();
             await _services.GetRequiredService<NitroBoosters>().InitializeAsync();

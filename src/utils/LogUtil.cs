@@ -1,4 +1,4 @@
-﻿namespace MattBot.Utilities
+﻿namespace mattbot.utils
 {
     public class LogUtil
     {

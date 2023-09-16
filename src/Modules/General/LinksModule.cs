@@ -1,6 +1,6 @@
 ﻿using Discord.Interactions;
 
-namespace MattBot.Modules.General
+namespace mattbot.modules.general
 {
     [CyberPatriot]
     public class LinksModule : InteractionModuleBase<SocketInteractionContext>

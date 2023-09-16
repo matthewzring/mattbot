@@ -2,7 +2,7 @@
 
 using Color = Discord.Color;
 
-namespace MattBot.Modules.General
+namespace mattbot.modules.general
 {
     [Ignore]
     [EnabledInDm(false)]

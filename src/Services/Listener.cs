@@ -1,6 +1,6 @@
 ﻿using Discord.WebSocket;
 
-namespace MattBot.Services
+namespace mattbot.services
 {
     public class Listener
     {

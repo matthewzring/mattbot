@@ -1,8 +1,8 @@
 ﻿using Discord.Interactions;
 using Discord.WebSocket;
-using MattBot.Utilities;
+using mattbot.utils;
 
-namespace MattBot.Modules.General
+namespace mattbot.modules.general
 {
     [CyberPatriot]
     public class MinecraftModule : InteractionModuleBase<SocketInteractionContext>

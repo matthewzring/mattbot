@@ -1,6 +1,6 @@
 ﻿using Discord.Interactions;
 
-namespace MattBot.Modules.General
+namespace mattbot.modules.general
 {
     public class LMGTFYModule : InteractionModuleBase<SocketInteractionContext>
     {

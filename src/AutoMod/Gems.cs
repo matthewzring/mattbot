@@ -1,8 +1,8 @@
 ﻿using Discord.WebSocket;
-using MattBot.Services;
+using mattbot.services;
 using Color = Discord.Color;
 
-namespace MattBot.AutoMod
+namespace mattbot.automod
 {
     public class Gems
     {

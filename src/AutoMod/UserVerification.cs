@@ -1,11 +1,10 @@
-﻿using MattBot.Services;
-using Discord.WebSocket;
+﻿using mattbot.services;
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Services;
 using Google.Apis.Sheets.v4;
-using MattBot.Utilities;
+using mattbot.utils;
 
-namespace MattBot.AutoMod
+namespace mattbot.automod
 {
     public class UserVerification
     {

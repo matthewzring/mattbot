@@ -1,7 +1,7 @@
 ﻿using Discord.Commands;
 using Discord.WebSocket;
 
-namespace MattBot.Modules.Moderation
+namespace mattbot.modules.moderation
 {
     public class CommandModule : ModuleBase<SocketCommandContext>
     {
