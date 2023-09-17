@@ -51,7 +51,7 @@ namespace mattbot.automod
                 return;
 
             // Blacklisted channels
-            if (gemChannel.Name.Contains("gems") || gemChannel.Name.Contains("announcements"))
+            if (newMessage.Channel.Name.Contains("gems") || newMessage.Channel.Name.Contains("announcements"))
                 return;
 
             // Bot perms
