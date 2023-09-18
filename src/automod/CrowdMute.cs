@@ -64,7 +64,7 @@ namespace mattbot.automod
                 return;
 
             // User is already timed out
-            if (((newMessage.Author as IGuildUser).TimedOutUntil != null) && !(((newMessage.Author as IGuildUser).TimedOutUntil - DateTimeOffset.UtcNow).ToString()[0].Equals("-")))
+            if (((newMessage.Author as IGuildUser).TimedOutUntil != null) && !((newMessage.Author as IGuildUser).TimedOutUntil - DateTimeOffset.UtcNow).ToString()[0].Equals('-'))
                 return;
 
             // Check if message is replying to someone

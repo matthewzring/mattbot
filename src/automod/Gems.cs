@@ -101,33 +101,33 @@ namespace mattbot.automod
             if (enumerable.Length < GEM_THRESHOLD)
                 return;
 
+            // Grabs the highest role and the color for it
+            Color userHighestRoleColor = Color.Default;
             if (newMessage.Author is SocketGuildUser guildUser)
             {
                 // Filters out any roles that are default color
                 var filterOutDefault = guildUser.Roles.Where(r => r.Color != Color.Default);
 
-                // Grabs the highest role and the color for it
-                Color userHighestRoleColor = Color.Default;
                 if (!filterOutDefault.Count().Equals(0))
                     userHighestRoleColor = filterOutDefault.MaxBy(r => r.Position).Color;
-
-                // Workaround for new username system
-                StringBuilder author = new StringBuilder();
-                author.Append(newMessage.Author.Username);
-                if (newMessage.Author.Discriminator != "0000")
-                    author.Append("#").Append(newMessage.Author.Discriminator);
-
-                var eb = new EmbedBuilder().WithAuthor(author.ToString(), newMessage.Author.GetAvatarUrl())
-                                        .WithColor(userHighestRoleColor)
-                                        .WithDescription(content + $"\n\n[Jump Link]({newMessage.GetJumpUrl()})")
-                                        .WithTimestamp(newMessage.Timestamp);
-
-                if (imageurl is not null)
-                    eb.WithImageUrl(imageurl);
-
-                var msg = await gemChannel.SendMessageAsync($"{GEM_EMOJI} {textChannel.Mention} `{message.Id}` {GEM_EMOJI}", embed: eb.Build()).ConfigureAwait(false);
-                await msg.AddReactionAsync(reaction.Emote);
             }
+
+            // Workaround for new username system
+            StringBuilder author = new StringBuilder();
+            author.Append(newMessage.Author.Username);
+            if (newMessage.Author.Discriminator != "0000")
+                author.Append("#").Append(newMessage.Author.Discriminator);
+
+            var eb = new EmbedBuilder().WithAuthor(author.ToString(), newMessage.Author.GetAvatarUrl())
+                                    .WithColor(userHighestRoleColor)
+                                    .WithDescription(content + $"\n\n[Jump Link]({newMessage.GetJumpUrl()})")
+                                    .WithTimestamp(newMessage.Timestamp);
+
+            if (imageurl is not null)
+                eb.WithImageUrl(imageurl);
+
+            var msg = await gemChannel.SendMessageAsync($"{GEM_EMOJI} {textChannel.Mention} `{message.Id}` {GEM_EMOJI}", embed: eb.Build()).ConfigureAwait(false);
+            await msg.AddReactionAsync(reaction.Emote);
         }
     }
 }
