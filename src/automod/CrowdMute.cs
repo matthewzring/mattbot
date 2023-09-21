@@ -108,7 +108,8 @@ namespace mattbot.automod
 
             // Timeout the user
             TimeSpan interval = new TimeSpan(0, CROWD_MUTE_DURATION, 0);
-            await (newMessage.Author as IGuildUser).SetTimeOutAsync(span: interval);
+            RequestOptions reason = new RequestOptions { AuditLogReason = "Crowd mute" };
+            await (newMessage.Author as IGuildUser).SetTimeOutAsync(interval, reason);
 
             // Let everyone know the user has been timed out
             await newMessage.ReplyAsync($"This user has been crowd muted for {CROWD_MUTE_DURATION} minutes.");
