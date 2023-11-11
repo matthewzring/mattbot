@@ -31,8 +31,10 @@ namespace mattbot.automod
                 return;
             }
 
+            IGuild guild = textChannel.Guild;
+
             // Look for a channel called botlog
-            ITextChannel tc = (await textChannel.Guild.GetTextChannelsAsync()).FirstOrDefault(x => x.Name == "botlog");
+            ITextChannel tc = (await guild.GetTextChannelsAsync()).FirstOrDefault(x => x.Name == "botlog");
             if (tc == null)
                 return;
 
@@ -51,7 +53,7 @@ namespace mattbot.automod
                 return;
 
             // Bot perms
-            var gUser = await textChannel.Guild.GetUserAsync(_client.CurrentUser.Id).ConfigureAwait(false);
+            var gUser = await guild.GetUserAsync(_client.CurrentUser.Id).ConfigureAwait(false);
             if (!gUser.GuildPermissions.ModerateMembers)
                 return;
 
@@ -83,20 +85,28 @@ namespace mattbot.automod
             if (content is null && imageurl is null)
                 return;
 
-            // Count reactions
-            var emoteCount = await newMessage.GetReactionUsersAsync(reaction.Emote, int.MaxValue).FlattenAsync().ConfigureAwait(false);
-            var count = emoteCount.Where(x => !x.IsBot).Where(x => x.Id != newMessage.Author.Id);
-            var enumerable = count as IUser[] ?? count.ToArray();
-            if (enumerable.Length < CROWD_MUTE_THRESHOLD)
-                return;
+            // Look for a role called "No Reactions"
+            var noReactions = guild.Roles.FirstOrDefault(role => role.Name == "No Reactions");
 
-            // Get a list of users that reacted
+            // Count all valid reactions
+            // A reaction is considered "valid" if the user who reacted is not a bot, the message author, or prohibited from reacting
+            var count = 0;
             IAsyncEnumerable<IReadOnlyCollection<IUser>> users = newMessage.GetReactionUsersAsync(reaction.Emote, int.MaxValue);
             StringBuilder rlist = new StringBuilder();
             await foreach (IReadOnlyCollection<IUser> chunk in users)
+            {
                 foreach (IUser reactuser in chunk)
-                    if (reactuser.Id != newMessage.Author.Id)
+                {
+                    IGuildUser guilduser = await guild.GetUserAsync(reactuser.Id);
+                    if ((noReactions is null || !guilduser.RoleIds.Contains(noReactions.Id)) && !reactuser.IsBot && reactuser.Id != newMessage.Author.Id)
+                    {
+                        count++;
                         rlist.Append("- ").Append(FormatUtil.formatFullUser(reactuser)).Append('\n');
+                    }
+                }
+            }
+            if (count < CROWD_MUTE_THRESHOLD)
+                return;
 
             var eb = new EmbedBuilder().WithColor(0xFF0000).WithDescription(content + $"\n\n[Jump Link]({newMessage.GetJumpUrl()})");
 

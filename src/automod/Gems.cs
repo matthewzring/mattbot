@@ -31,8 +31,10 @@ namespace mattbot.automod
                 return;
             }
 
+            IGuild guild = textChannel.Guild;
+
             // Look for a channel called gems
-            var gemChannel = (await textChannel.Guild.GetTextChannelsAsync())?.FirstOrDefault(x => x.Name == "gems");
+            var gemChannel = (await guild.GetTextChannelsAsync())?.FirstOrDefault(x => x.Name == "gems");
             if (gemChannel == null)
                 return;
 
@@ -55,7 +57,7 @@ namespace mattbot.automod
                 return;
 
             // Bot perms
-            var gUser = await textChannel.Guild.GetUserAsync(_client.CurrentUser.Id).ConfigureAwait(false);
+            var gUser = await guild.GetUserAsync(_client.CurrentUser.Id).ConfigureAwait(false);
             var botPerms = gUser.GetPermissions(gemChannel);
             if (!botPerms.Has(ChannelPermission.SendMessages))
                 return;
@@ -94,11 +96,25 @@ namespace mattbot.automod
             if (content is null && imageurl is null)
                 return;
 
-            // Count reactions
-            var emoteCount = await newMessage.GetReactionUsersAsync(reaction.Emote, int.MaxValue).FlattenAsync().ConfigureAwait(false);
-            var count = emoteCount.Where(x => !x.IsBot).Where(x => x.Id != newMessage.Author.Id);
-            var enumerable = count as IUser[] ?? count.ToArray();
-            if (enumerable.Length < GEM_THRESHOLD)
+            // Look for a role called "No Reactions"
+            var noReactions = guild.Roles.FirstOrDefault(role => role.Name == "No Reactions");
+
+            // Count all valid reactions
+            // A reaction is considered "valid" if the user who reacted is not a bot, the message author, or prohibited from reacting
+            var count = 0;
+            IAsyncEnumerable<IReadOnlyCollection<IUser>> users = newMessage.GetReactionUsersAsync(reaction.Emote, int.MaxValue);
+            await foreach (IReadOnlyCollection<IUser> chunk in users)
+            {
+                foreach (IUser reactuser in chunk)
+                {
+                    IGuildUser guilduser = await guild.GetUserAsync(reactuser.Id);
+                    if ((noReactions is null || !guilduser.RoleIds.Contains(noReactions.Id)) && !reactuser.IsBot && reactuser.Id != newMessage.Author.Id)
+                    {
+                        count++;
+                    }
+                }
+            }
+            if (count < GEM_THRESHOLD)
                 return;
 
             // Grabs the highest role and the color for it
