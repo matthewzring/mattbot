@@ -8,11 +8,13 @@ namespace mattbot.automod
     {
         private readonly DiscordSocketClient _client;
         private readonly Listener _listener;
+        private readonly IConfiguration _configuration;
 
-        public MessageReports(DiscordSocketClient client, Listener listener)
+        public MessageReports(DiscordSocketClient client, Listener listener, IConfiguration configuration)
         {
             _client = client;
             _listener = listener;
+            _configuration = configuration;
         }
 
         public async Task InitializeAsync()
@@ -22,6 +24,10 @@ namespace mattbot.automod
 
         private async Task OnReactionAddedAsync(Cacheable<IUserMessage, ulong> message, Cacheable<IMessageChannel, ulong> channel, SocketReaction reaction)
         {
+            int.TryParse(_configuration["message_report_threshold"], out int MESSAGE_REPORT_THRESHOLD);
+            int.TryParse(_configuration["message_report_duration"], out int MESSAGE_REPORT_DURATION);
+            string MESSAGE_REPORT_EMOJI = _configuration["message_report_emoji"];
+
             if (!reaction.User.IsSpecified
                 || reaction.User.Value.IsBot
                 || !channel.HasValue

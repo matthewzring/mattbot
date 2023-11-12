@@ -9,6 +9,13 @@ namespace mattbot.modules.general
     [Group("matt", "matt coins commands")]
     public class MattCoinsModule : InteractionModuleBase<SocketInteractionContext>
     {
+        private const string CONSTRUCTION = "\uD83D\uDEA7"; // 🚧
+        private const string SWORD = "\u2694\uFE0F"; // ⚔️
+        private const string WATER = "\uD83D\uDCA7"; // 💧
+
+        private const string NITRO = "<:nitro:1091272926881390634>";
+        private const string PING = "<:ping:1091272927737036953>";
+
         [SlashCommand("explanation", "explains what MattCoins are")]
         public async Task ExplanationAsync()
         {
@@ -19,10 +26,10 @@ namespace mattbot.modules.general
                 $"`/matt shop` - shows the available redeemables\n" +
                 $"`/matt purchase <item>` - buys an item from the shop\n\n" +
                 $"Ways to earn MattCoins:\n" +
-                $"`1.` __Nitro Boosting__ ~ Every 6 hours, anyone boosting any of the following servers gets 1 MattBuck\n" +
-                $"\t\t- *CyberPatriot* (<{CYBERPATRIOT_INVITE}>)\n" +
-                $"\t\t- *CCDC* (<{CCDC_INVITE}>)\n" +
-                $"`2.` __Twitch__ ~ Every 6 hours, anyone subscribed to matt's Twitch channel gets 1 MattBuck\n" +
+                $"`1.` __Nitro Boosting__ ~ Every 6 hours, anyone boosting any of the following servers gets 1 MattCoin\n" +
+                $"\t\t- *CyberPatriot* (<{CYBERPATRIOT_SERVER_INVITE}>)\n" +
+                $"\t\t- *CCDC* (<{CCDC_SERVER_INVITE}>)\n" +
+                $"`2.` __Twitch__ ~ Every 6 hours, anyone subscribed to matt's Twitch channel gets 1 MattCoin\n" +
                 $"`3.` __Giveaways__ ~ Sometimes matt will just give away MattCoins randomly\n" +
                 $"Note: All the above methods stack; if you're boosting in Discord and subscribed on Twitch, you'll earn 2 MattCoins every 6 hours.", ephemeral: true);
         }

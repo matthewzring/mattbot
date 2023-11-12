@@ -8,7 +8,6 @@ global using System.Text.RegularExpressions;
 global using System.Reflection;
 global using Microsoft.Extensions.Configuration;
 global using Microsoft.Extensions.DependencyInjection;
-global using LiteDB;
 global using mattbot.logging;
 global using static mattbot.Attributes;
 global using static mattbot.Globals;
@@ -18,8 +17,8 @@ namespace mattbot
     public class Globals
     {
         // Links
-        public const string CYBERPATRIOT_INVITE = "https://discord.gg/cyberpatriot";
-        public const string CCDC_INVITE = "https://discord.gg/fFX7fJy6Vj";
+        public const string CYBERPATRIOT_SERVER_INVITE = "https://discord.gg/cyberpatriot";
+        public const string CCDC_SERVER_INVITE = "https://discord.gg/fFX7fJy6Vj";
 
         // Strings
         public const string ERROR_MESSAGE = "An error occured: Please contact **matthewzring** for help.";
@@ -34,36 +33,8 @@ namespace mattbot
         public const ulong CCDC_ID = 1093372273295101992;
         public const ulong CYBERDISCORD_ID = 1105972904711176262;
 
-        // Emojis
+        // Emoji
         public const string CHECK = "\u2611\uFE0F"; // ☑️
         public const string X = "\u274C"; // ❌
-
-        // Logs
-        public const string VOICE_JOIN = "<:voicejoin:1110632369414742046>";
-        public const string VOICE_LEAVE = "<:voiceleave:1110632368156463246>";
-        public const string VOICE_CHANGE = "<:voicechange:1110632371495129098>";
-
-        // MattCoin
-        public const string CONSTRUCTION = "\uD83D\uDEA7"; // 🚧
-        public const string SWORD = "\u2694\uFE0F"; // ⚔️
-        public const string WATER = "\uD83D\uDCA7"; // 💧
-        public const string NITRO = "<:nitro:1091272926881390634>";
-        public const string PING = "<:ping:1091272927737036953>";
-        public const string MATTCOIN = "<:mattcoin:1110649089122635776>";
-
-        // Gems
-        public const int GEM_THRESHOLD = 4;
-        public const int GEM_DURATION = 2; // hours
-        public const string GEM_EMOJI = "\uD83D\uDC8E"; // 💎
-
-        // Message Reports
-        public const int MESSAGE_REPORT_THRESHOLD = 3;
-        public const int MESSAGE_REPORT_DURATION = 2; // hours
-        public const string MESSAGE_REPORT_EMOJI = "\uD83D\uDDD1\uFE0F"; // 🗑️
-
-        // Crowd Mute
-        public const int CROWD_MUTE_THRESHOLD = 3;
-        public const int CROWD_MUTE_DURATION = 10; // minutes
-        public const string CROWD_MUTE_EMOJI = "<:1984:1025604468559061042>";
     }
 }

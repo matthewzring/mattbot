@@ -8,11 +8,13 @@ namespace mattbot.automod
     {
         private readonly DiscordSocketClient _client;
         private readonly Listener _listener;
+        private readonly IConfiguration _configuration;
 
-        public CrowdMute(DiscordSocketClient client, Listener listener)
+        public CrowdMute(DiscordSocketClient client, Listener listener, IConfiguration configuration)
         {
             _client = client;
             _listener = listener;
+            _configuration = configuration;
         }
 
         public async Task InitializeAsync()
@@ -22,6 +24,10 @@ namespace mattbot.automod
 
         private async Task OnReactionAddedAsync(Cacheable<IUserMessage, ulong> message, Cacheable<IMessageChannel, ulong> channel, SocketReaction reaction)
         {
+            int.TryParse(_configuration["crowd_mute_threshold"], out int CROWD_MUTE_THRESHOLD);
+            int.TryParse(_configuration["crowd_mute_duration"], out int CROWD_MUTE_DURATION);
+            string CROWD_MUTE_EMOJI = _configuration["crowd_mute_emoji"];
+
             if (!reaction.User.IsSpecified
                 || reaction.User.Value.IsBot
                 || !channel.HasValue

@@ -42,8 +42,8 @@ namespace mattbot.services
             {
                 if (arg.Channel is IPrivateChannel)
                 {
-                    // Log the modmail received
-                    await Logger.LogModmailReceived(_client, arg);
+                    // Log the message received
+                    await Logger.LogMessageReceived(_client, arg);
                 }
             }
         }

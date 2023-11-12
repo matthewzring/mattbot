@@ -52,31 +52,11 @@ namespace mattbot.automod
                         {
                             if (row.Count > 0 && row[0].ToString() == arg.Id.ToString())
                             {
-                                var captain = arg.Guild.Roles.FirstOrDefault(x => x.Name == "2023 Captain");
-                                if (captain == null)
+                                var competitor23 = arg.Guild.Roles.FirstOrDefault(x => x.Name == "2023 Competitor");
+                                if (competitor23 == null)
                                     return;
-
-                                var competitor = arg.Guild.Roles.FirstOrDefault(x => x.Name == "2023 Competitor");
-                                if (competitor == null)
-                                    return;
-
-                                ITextChannel tc = (await arg.Guild.GetTextChannelsAsync()).FirstOrDefault(x => x.Name == "serverlog");
-                                if (tc == null)
-                                    return;
-
-                                if (range.StartsWith("Form Responses 1!F"))
-                                {
-                                    await arg.AddRoleAsync(captain);
-                                    await arg.AddRoleAsync(competitor);
-                                    await tc.SendMessageAsync($"{CHECK} Verified {FormatUtil.formatFullUser(arg)} as a team captain!");
-                                    break;
-                                }
-                                else
-                                {
-                                    await arg.AddRoleAsync(competitor);
-                                    await tc.SendMessageAsync($"{CHECK} Verified {FormatUtil.formatFullUser(arg)} as a competitor!");
-                                    break;
-                                }
+                                await arg.AddRoleAsync(competitor23);
+                                break;
                             }
                         }
                     }

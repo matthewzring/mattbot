@@ -8,11 +8,13 @@ namespace mattbot.automod
     {
         private readonly DiscordSocketClient _client;
         private readonly Listener _listener;
+        private readonly IConfiguration _configuration;
 
-        public Gems(DiscordSocketClient client, Listener listener)
+        public Gems(DiscordSocketClient client, Listener listener, IConfiguration configuration)
         {
             _client = client;
             _listener = listener;
+            _configuration = configuration;
         }
 
         public async Task InitializeAsync()
@@ -22,6 +24,10 @@ namespace mattbot.automod
 
         private async Task OnReactionAddedAsync(Cacheable<IUserMessage, ulong> message, Cacheable<IMessageChannel, ulong> channel, SocketReaction reaction)
         {
+            int.TryParse(_configuration["gem_threshold"], out int GEM_THRESHOLD);
+            int.TryParse(_configuration["gem_duration"], out int GEM_DURATION);
+            string GEM_EMOJI = _configuration["gem_emoji"];
+
             if (!reaction.User.IsSpecified
                 || reaction.User.Value.IsBot
                 || !channel.HasValue
@@ -109,9 +115,7 @@ namespace mattbot.automod
                 {
                     IGuildUser guilduser = await guild.GetUserAsync(reactuser.Id);
                     if ((noReactions is null || !guilduser.RoleIds.Contains(noReactions.Id)) && !reactuser.IsBot && reactuser.Id != newMessage.Author.Id)
-                    {
                         count++;
-                    }
                 }
             }
             if (count < GEM_THRESHOLD)

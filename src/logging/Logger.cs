@@ -10,6 +10,10 @@ namespace mattbot.logging
         private const string NEW = "\uD83C\uDD95"; // 🆕
         private const string LEAVE = "\uD83D\uDCE4"; // 📤
 
+        private const string VOICE_JOIN = "<:voicejoin:1110632369414742046>";
+        private const string VOICE_LEAVE = "<:voiceleave:1110632368156463246>";
+        private const string VOICE_CHANGE = "<:voicechange:1110632371495129098>";
+
         public static async Task Log(DateTimeOffset now, ITextChannel tc, string emote, string message, Embed embed)
         {
             try
@@ -94,7 +98,7 @@ namespace mattbot.logging
             await Log(DateTimeOffset.UtcNow, tc, VOICE_LEAVE, $"{FormatUtil.formatFullUser(arg1)} has left voice channel _{arg2.VoiceChannel.Name}_", null);
         }
 
-        public static async Task LogModmailReceived(DiscordSocketClient client, SocketMessage message)
+        public static async Task LogMessageReceived(DiscordSocketClient client, SocketMessage message)
         {
             string content = message.Content;
             string imageurl = message.Attachments?.FirstOrDefault()?.ProxyUrl;
@@ -103,9 +107,7 @@ namespace mattbot.logging
             StringBuilder builder = new StringBuilder();
             builder.Append(message.Author.Username);
             if (message.Author.Discriminator != "0000")
-            {
                 builder.Append("#").Append(message.Author.Discriminator);
-            }
             string author = builder.ToString();
             var eb = new EmbedBuilder().WithAuthor(author, message.Author.GetAvatarUrl()).WithColor(0xFF0000).WithDescription(content).WithTimestamp(message.Timestamp);
             if (imageurl is not null)
