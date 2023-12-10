@@ -74,7 +74,7 @@ namespace mattbot.automod
                 if (tc == null)
                     return;
                 DateTimeOffset now = DateTimeOffset.UtcNow;
-                await tc.SendMessageAsync($"{X} Could not verify {FormatUtil.formatFullUser(arg)}!");
+                await tc.SendMessageAsync($"{ERROR} Could not verify {FormatUtil.formatFullUser(arg)}!");
             }
         }
     }

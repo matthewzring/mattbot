@@ -41,7 +41,7 @@ namespace mattbot.modules.general
 
             if (user.Roles.Contains(mc_registered))
             {
-                await Logger.Log(now, tc, X, $"{FormatUtil.formatFullUser(Context.User)} attempted to re-register with username: `{username}`", null);
+                await Logger.Log(now, tc, ERROR, $"{FormatUtil.formatFullUser(Context.User)} attempted to re-register with username: `{username}`", null);
                 await RespondAsync($"This account is already registered!", ephemeral: true);
                 return;
             }
@@ -76,7 +76,7 @@ namespace mattbot.modules.general
                 }
                 else
                 {
-                    await Logger.Log(now, tc, X, $"{FormatUtil.formatFullUser(Context.User)} failed registration with username: `{username}`"
+                    await Logger.Log(now, tc, ERROR, $"{FormatUtil.formatFullUser(Context.User)} failed registration with username: `{username}`"
                             + $"\nRequest failed with status code: `{response.StatusCode}`", null);
                     await FollowupAsync(ERROR_MESSAGE, ephemeral: true);
                     return;
@@ -84,7 +84,7 @@ namespace mattbot.modules.general
             }
             catch (Exception ex)
             {
-                await Logger.Log(now, tc, X, $"{FormatUtil.formatFullUser(Context.User)} failed registration with username: `{username}`"
+                await Logger.Log(now, tc, ERROR, $"{FormatUtil.formatFullUser(Context.User)} failed registration with username: `{username}`"
                             + $"\nError: `{ex.Message}`", null);
                 await FollowupAsync(ERROR_MESSAGE, ephemeral: true);
             }
@@ -104,7 +104,7 @@ namespace mattbot.modules.general
             var owner = Context.Guild.GetUser(OWNER_ID);
             if (Context.User.Id != OWNER_ID)
             {
-                await RespondAsync($"{X} Sorry, this command can only be used by {FormatUtil.formatUser(owner)}!", ephemeral: true);
+                await RespondAsync($"{ERROR} Sorry, this command can only be used by {FormatUtil.formatUser(owner)}!", ephemeral: true);
                 return;
             }
 

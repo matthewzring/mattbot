@@ -1,8 +1,4 @@
 ﻿global using Discord;
-global using System;
-global using System.Collections.Generic;
-global using System.Linq;
-global using System.Threading.Tasks;
 global using System.Text;
 global using System.Text.RegularExpressions;
 global using System.Reflection;
@@ -34,7 +30,7 @@ namespace mattbot
         public const ulong CYBERDISCORD_ID = 1105972904711176262;
 
         // Emoji
-        public const string CHECK = "\u2611\uFE0F"; // ☑️
-        public const string X = "\u274C"; // ❌
+        public const string SUCCESS = "\u2611\uFE0F"; // ☑️
+        public const string ERROR = "\u274C"; // ❌
     }
 }

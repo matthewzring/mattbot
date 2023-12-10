@@ -17,7 +17,7 @@ namespace mattbot.modules.general
             SocketRole colorRole = null;
             if (user.Roles.FirstOrDefault(x => x.Name == "Nitro Booster") != null || user.GuildPermissions.Has(GuildPermission.BanMembers))
             {
-                colorRole = user.Roles.Where(x => x.Name.Contains(user.Username)).FirstOrDefault();
+                colorRole = user.Roles.Where(x => x.Name.Equals(user.Username)).FirstOrDefault();
             }
             else if (user.Roles.FirstOrDefault(x => x.Name == "Event Winner") != null)
             {

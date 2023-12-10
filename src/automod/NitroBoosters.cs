@@ -16,6 +16,7 @@ namespace mattbot.automod
         {
             _listener.GuildMemberUpdated += OnGuildMemberUpdatedAsync;
             _listener.UserUpdated += OnUserUpdatedAsync;
+            _listener.UserLeft += OnUserLeftAsync;
         }
 
         private async Task OnGuildMemberUpdatedAsync(Cacheable<SocketGuildUser, ulong> before, SocketGuildUser after)
@@ -66,19 +67,33 @@ namespace mattbot.automod
             if (arg1.Username != arg2.Username)
             {
                 var user = arg2 as SocketGuildUser;
-
                 foreach (var guild in user.MutualGuilds)
                 {
                     if (guild.Id == CYBERPATRIOT_ID || guild.Id == CCDC_ID)
                     {
                         if (user.Roles.FirstOrDefault(x => x.Name == "Nitro Booster") != null || user.GuildPermissions.Has(GuildPermission.BanMembers))
                         {
-                            var colorRole = user.Roles.Where(x => x.Name.Contains(arg1.Username)).FirstOrDefault();
+                            var colorRole = user.Roles.Where(x => x.Name.Equals(arg1.Username)).FirstOrDefault();
 
                             if (colorRole != null)
                                 await colorRole.ModifyAsync(x => x.Name = arg2.Username);
                         }
                     }
+                }
+            }
+        }
+
+        private async Task OnUserLeftAsync(IGuild arg1, IUser arg2)
+        {
+            if (arg1.Id == CYBERPATRIOT_ID || arg1.Id == CCDC_ID)
+            {
+                var user = arg2 as SocketGuildUser;
+                if (user.Roles.FirstOrDefault(x => x.Name == "Nitro Booster") != null)
+                {
+                    var colorRole = user.Roles.Where(x => x.Name.Equals(arg2.Username)).FirstOrDefault();
+
+                    if (colorRole != null)
+                        await colorRole.DeleteAsync();
                 }
             }
         }

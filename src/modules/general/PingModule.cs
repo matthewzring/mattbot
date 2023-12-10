@@ -1,7 +1,4 @@
-﻿using Discord;
-using Discord.Interactions;
-using Discord.WebSocket;
-using mattbot.utils;
+﻿using Discord.Interactions;
 using System.Diagnostics;
 
 namespace mattbot.modules.general

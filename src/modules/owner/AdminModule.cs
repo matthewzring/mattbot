@@ -16,7 +16,7 @@ namespace mattbot.modules.owner
             var owner = Context.Guild.GetUser(OWNER_ID);
             if (Context.User.Id != owner.Id)
             {
-                await RespondAsync($"{X} Sorry, this command can only be used by {FormatUtil.formatUser(owner)}!", ephemeral: true);
+                await RespondAsync($"{ERROR} Sorry, this command can only be used by {FormatUtil.formatUser(owner)}!", ephemeral: true);
                 return;
             }
 
@@ -48,7 +48,7 @@ namespace mattbot.modules.owner
                 var owner = Context.Guild.GetUser(OWNER_ID);
                 if (Context.User.Id != owner.Id)
                 {
-                    await RespondAsync($"{X} Sorry, this command can only be used by {FormatUtil.formatUser(owner)}!", ephemeral: true);
+                    await RespondAsync($"{ERROR} Sorry, this command can only be used by {FormatUtil.formatUser(owner)}!", ephemeral: true);
                     return;
                 }
 
@@ -75,7 +75,7 @@ namespace mattbot.modules.owner
                 var owner = Context.Guild.GetUser(OWNER_ID);
                 if (Context.User.Id != owner.Id)
                 {
-                    await RespondAsync($"{X} Sorry, this command can only be used by {FormatUtil.formatUser(owner)}!", ephemeral: true);
+                    await RespondAsync($"{ERROR} Sorry, this command can only be used by {FormatUtil.formatUser(owner)}!", ephemeral: true);
                     return;
                 }
 
