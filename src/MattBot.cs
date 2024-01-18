@@ -38,8 +38,7 @@ namespace mattbot
                 .AddSingleton(new Listener(_client))
                 .AddSingleton<Gems>()
                 .AddSingleton<MessageReports>()
-                .AddSingleton<NitroBoosters>()
-                .AddSingleton<UserVerification>()
+                .AddSingleton<Users>()
                 .AddSingleton<CrowdMute>()
                 .BuildServiceProvider();
         }
@@ -57,8 +56,7 @@ namespace mattbot
             await _services.GetRequiredService<InteractionHandlingService>().InitializeAsync();
             await _services.GetRequiredService<Gems>().InitializeAsync();
             await _services.GetRequiredService<MessageReports>().InitializeAsync();
-            await _services.GetRequiredService<NitroBoosters>().InitializeAsync();
-            await _services.GetRequiredService<UserVerification>().InitializeAsync();
+            await _services.GetRequiredService<Users>().InitializeAsync();
             await _services.GetRequiredService<CrowdMute>().InitializeAsync();
 
             Enum.TryParse(_configuration["activity"], out ActivityType activityType);
