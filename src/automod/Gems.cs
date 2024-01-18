@@ -81,7 +81,7 @@ namespace mattbot.automod
             // Check if message is replying to someone
             StringBuilder builder = new StringBuilder();
             if (newMessage.Reference is not null)
-                builder.Append(newMessage.ReferencedMessage.Author.Mention).Append(" ");
+                builder.Append(newMessage.ReferencedMessage.Author.Mention).Append("\n");
 
             // Get the contents of the message
             string content;
@@ -102,8 +102,12 @@ namespace mattbot.automod
             if (content is null && imageurl is null)
                 return;
 
-            // Look for a role called "No Reactions"
-            var noReactions = guild.Roles.FirstOrDefault(role => role.Name == "No Reactions");
+            // Look for a role called "No Gems"
+            var noGems = guild.Roles.FirstOrDefault(role => role.Name == "No Gems");
+
+            // Make sure the author does not have the "No Gems" role
+            if (newMessage.Author is IGuildUser user && user.RoleIds.Contains(noGems.Id))
+                return;
 
             // Count all valid reactions
             // A reaction is considered "valid" if the user who reacted is not a bot, the message author, or prohibited from reacting
@@ -114,7 +118,7 @@ namespace mattbot.automod
                 foreach (IUser reactuser in chunk)
                 {
                     IGuildUser guilduser = await guild.GetUserAsync(reactuser.Id);
-                    if ((noReactions is null || !guilduser.RoleIds.Contains(noReactions.Id)) && !reactuser.IsBot && reactuser.Id != newMessage.Author.Id)
+                    if ((noGems is null || !guilduser.RoleIds.Contains(noGems.Id)) && !reactuser.IsBot && reactuser.Id != newMessage.Author.Id)
                         count++;
                 }
             }

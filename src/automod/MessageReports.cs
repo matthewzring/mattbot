@@ -39,8 +39,8 @@ namespace mattbot.automod
 
             IGuild guild = textChannel.Guild;
 
-            // Look for a channel called botlog
-            ITextChannel tc = (await guild.GetTextChannelsAsync()).FirstOrDefault(x => x.Name == "botlog");
+            // Look for a channel called modlog
+            ITextChannel tc = (await guild.GetTextChannelsAsync()).FirstOrDefault(x => x.Name == "modlog");
             if (tc == null)
                 return;
 
@@ -75,7 +75,7 @@ namespace mattbot.automod
             // Check if message is replying to someone
             StringBuilder builder = new StringBuilder();
             if (newMessage.Reference is not null)
-                builder.Append(newMessage.ReferencedMessage.Author.Mention).Append(" ");
+                builder.Append(newMessage.ReferencedMessage.Author.Mention).Append("\n");
 
             // Get the contents of the message
             string content;
@@ -88,8 +88,8 @@ namespace mattbot.automod
             if (content is null && imageurl is null)
                 return;
 
-            // Look for a role called "No Reactions"
-            var noReactions = guild.Roles.FirstOrDefault(role => role.Name == "No Reactions");
+            // Look for a role called "No Reports"
+            var noReports = guild.Roles.FirstOrDefault(role => role.Name == "No Reports");
 
             // Count all valid reactions
             // A reaction is considered "valid" if the user who reacted is not a bot, the message author, or prohibited from reacting
@@ -101,13 +101,14 @@ namespace mattbot.automod
                 foreach (IUser reactuser in chunk)
                 {
                     IGuildUser guilduser = await guild.GetUserAsync(reactuser.Id);
-                    if ((noReactions is null || !guilduser.RoleIds.Contains(noReactions.Id)) && !reactuser.IsBot && reactuser.Id != newMessage.Author.Id)
+                    if ((noReports is null || !guilduser.RoleIds.Contains(noReports.Id)) && !reactuser.IsBot && reactuser.Id != newMessage.Author.Id)
                     {
                         count++;
-                        rlist.Append("- ").Append(FormatUtil.formatFullUser(reactuser)).Append('\n');
+                        rlist.Append(FormatUtil.formatFullUser(reactuser)).Append(", ");
                     }
                 }
             }
+            rlist.Length -= 2;
             if (count < MESSAGE_REPORT_THRESHOLD)
                 return;
 
@@ -116,11 +117,15 @@ namespace mattbot.automod
             if (imageurl is not null)
                 eb.WithImageUrl(imageurl);
 
-            var now = DateTimeOffset.UtcNow;
-            await Logger.Log(now, tc, MESSAGE_REPORT_EMOJI, $"{FormatUtil.formatFullUser(newMessage.Author)}'s message was reported in {textChannel.Mention} by:\n\n{rlist}", eb.Build());
+            try
+            {
+                var now = DateTimeOffset.UtcNow;
+                await Logger.Log(now, tc, MESSAGE_REPORT_EMOJI, $"{FormatUtil.formatFullUser(newMessage.Author)}'s message was reported in {textChannel.Mention} by:\n\n{rlist}", eb.Build());
 
-            // Delete the message
-            await newMessage.DeleteAsync();
+                // Delete the message
+                await newMessage.DeleteAsync();
+            }
+            catch (Exception) { }
         }
     }
 }

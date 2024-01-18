@@ -15,6 +15,12 @@ namespace mattbot.modules.general
         [UserCommand("Rules Book")]
         public async Task HandleRulesBookCommand(IUser user)
         {
+            var noContextCommands = Context.Guild.Roles.FirstOrDefault(role => role.Name == "No Context Commands");
+            if (Context.User is IGuildUser guildUser && guildUser.RoleIds.Contains(noContextCommands.Id))
+            {
+                await RespondAsync("You are prohibited from using this command!", ephemeral: true);
+                return;
+            }
             if (user.IsBot || user.Id == Context.User.Id)
             {
                 await RespondAsync(RULESBOOK, ephemeral: true);
@@ -27,6 +33,12 @@ namespace mattbot.modules.general
         [UserCommand("Competition Schedule")]
         public async Task HandleCompetitionScheduleCommand(IUser user)
         {
+            var noContextCommands = Context.Guild.Roles.FirstOrDefault(role => role.Name == "No Context Commands");
+            if (Context.User is IGuildUser guildUser && guildUser.RoleIds.Contains(noContextCommands.Id))
+            {
+                await RespondAsync("You are prohibited from using this command!", ephemeral: true);
+                return;
+            }
             if (user.IsBot || user.Id == Context.User.Id)
             {
                 await RespondAsync(SCHEDULE, ephemeral: true);
@@ -39,6 +51,12 @@ namespace mattbot.modules.general
         [UserCommand("Challenges by Round")]
         public async Task HandleChallengesByRoundCommand(IUser user)
         {
+            var noContextCommands = Context.Guild.Roles.FirstOrDefault(role => role.Name == "No Context Commands");
+            if (Context.User is IGuildUser guildUser && guildUser.RoleIds.Contains(noContextCommands.Id))
+            {
+                await RespondAsync("You are prohibited from using this command!", ephemeral: true);
+                return;
+            }
             if (user.IsBot || user.Id == Context.User.Id)
             {
                 await RespondAsync(CHALLENGES, ephemeral: true);
@@ -51,6 +69,12 @@ namespace mattbot.modules.general
         [UserCommand("Tiers & Advancement")]
         public async Task HandleTiersAndAdvancementCommand(IUser user)
         {
+            var noContextCommands = Context.Guild.Roles.FirstOrDefault(role => role.Name == "No Context Commands");
+            if (Context.User is IGuildUser guildUser && guildUser.RoleIds.Contains(noContextCommands.Id))
+            {
+                await RespondAsync("You are prohibited from using this command!", ephemeral: true);
+                return;
+            }
             if (user.IsBot || user.Id == Context.User.Id)
             {
                 await RespondAsync(ADVANCEMENT, ephemeral: true);
@@ -63,6 +87,12 @@ namespace mattbot.modules.general
         [UserCommand("Contact")]
         public async Task HandleContactCommand(IUser user)
         {
+            var noContextCommands = Context.Guild.Roles.FirstOrDefault(role => role.Name == "No Context Commands");
+            if (Context.User is IGuildUser guildUser && guildUser.RoleIds.Contains(noContextCommands.Id))
+            {
+                await RespondAsync("You are prohibited from using this command!", ephemeral: true);
+                return;
+            }
             if (user.IsBot || user.Id == Context.User.Id)
             {
                 await RespondAsync(CONTACT, ephemeral: true);

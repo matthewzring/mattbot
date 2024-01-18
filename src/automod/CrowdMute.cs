@@ -37,10 +37,13 @@ namespace mattbot.automod
                 return;
             }
 
+            // CyberPatriot only
             IGuild guild = textChannel.Guild;
+            if (guild.Id is not CYBERPATRIOT_ID)
+                return;
 
-            // Look for a channel called botlog
-            ITextChannel tc = (await guild.GetTextChannelsAsync()).FirstOrDefault(x => x.Name == "botlog");
+            // Look for a channel called modlog
+            ITextChannel tc = (await guild.GetTextChannelsAsync()).FirstOrDefault(x => x.Name == "modlog");
             if (tc == null)
                 return;
 
@@ -78,7 +81,7 @@ namespace mattbot.automod
             // Check if message is replying to someone
             StringBuilder builder = new StringBuilder();
             if (newMessage.Reference is not null)
-                builder.Append(newMessage.ReferencedMessage.Author.Mention).Append(" ");
+                builder.Append(newMessage.ReferencedMessage.Author.Mention).Append("\n");
 
             // Get the contents of the message
             string content;
@@ -91,8 +94,8 @@ namespace mattbot.automod
             if (content is null && imageurl is null)
                 return;
 
-            // Look for a role called "No Reactions"
-            var noReactions = guild.Roles.FirstOrDefault(role => role.Name == "No Reactions");
+            // Look for a role called "No Crowdmute"
+            var noCrowdmute = guild.Roles.FirstOrDefault(role => role.Name == "No Crowdmute");
 
             // Count all valid reactions
             // A reaction is considered "valid" if the user who reacted is not a bot, the message author, or prohibited from reacting
@@ -104,13 +107,14 @@ namespace mattbot.automod
                 foreach (IUser reactuser in chunk)
                 {
                     IGuildUser guilduser = await guild.GetUserAsync(reactuser.Id);
-                    if ((noReactions is null || !guilduser.RoleIds.Contains(noReactions.Id)) && !reactuser.IsBot && reactuser.Id != newMessage.Author.Id)
+                    if ((noCrowdmute is null || !guilduser.RoleIds.Contains(noCrowdmute.Id)) && !reactuser.IsBot && reactuser.Id != newMessage.Author.Id)
                     {
                         count++;
-                        rlist.Append("- ").Append(FormatUtil.formatFullUser(reactuser)).Append('\n');
+                        rlist.Append(FormatUtil.formatFullUser(reactuser)).Append(", ");
                     }
                 }
             }
+            rlist.Length -= 2;
             if (count < CROWD_MUTE_THRESHOLD)
                 return;
 
@@ -119,16 +123,20 @@ namespace mattbot.automod
             if (imageurl is not null)
                 eb.WithImageUrl(imageurl);
 
-            var now = DateTimeOffset.UtcNow;
-            await Logger.Log(now, tc, CROWD_MUTE_EMOJI, $"{FormatUtil.formatFullUser(newMessage.Author)} has been crowd muted for {CROWD_MUTE_DURATION} minutes in {textChannel.Mention} by:\n\n{rlist}", eb.Build());
+            try
+            {
+                // Timeout the user
+                TimeSpan interval = new TimeSpan(0, CROWD_MUTE_DURATION, 0);
+                RequestOptions reason = new RequestOptions { AuditLogReason = $"Crowd muted" };
+                await (newMessage.Author as IGuildUser).SetTimeOutAsync(interval, reason);
 
-            // Timeout the user
-            TimeSpan interval = new TimeSpan(0, CROWD_MUTE_DURATION, 0);
-            RequestOptions reason = new RequestOptions { AuditLogReason = "Crowd mute" };
-            await (newMessage.Author as IGuildUser).SetTimeOutAsync(interval, reason);
+                var now = DateTimeOffset.UtcNow;
+                await Logger.Log(now, tc, CROWD_MUTE_EMOJI, $"{FormatUtil.formatFullUser(newMessage.Author)} was crowd muted for {CROWD_MUTE_DURATION} minutes in {textChannel.Mention} by:\n\n{rlist}", eb.Build());
 
-            // Let everyone know the user has been timed out
-            await newMessage.ReplyAsync($"This user has been crowd muted for {CROWD_MUTE_DURATION} minutes.");
+                // Let everyone know the user has been timed out
+                await newMessage.ReplyAsync($"This user has been crowd muted for {CROWD_MUTE_DURATION} minutes.");
+            }
+            catch (Exception) { } 
         }
     }
 }
