@@ -9,7 +9,7 @@
 
         public static string LogFormat(DateTimeOffset time, string emoji, string content)
         {
-            return string.Format(LOG_FORMAT, TimeF(time), emoji, content);
+            return String.Format(LOG_FORMAT, TimeF(time), emoji, content);
         }
 
         private static string TimeF(DateTimeOffset time)

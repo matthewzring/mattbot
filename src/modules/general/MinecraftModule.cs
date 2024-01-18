@@ -21,7 +21,7 @@ namespace mattbot.modules.general
         [SlashCommand("register", "Register your Minecraft account")]
         public async Task RegisterMCAsync([Summary("username", "Your Minecraft username")] string username)
         {
-            var user = Context.User as SocketGuildUser;
+            SocketGuildUser user = Context.User as SocketGuildUser;
 
             ITextChannel tc = Context.Guild.TextChannels.FirstOrDefault(x => x.Name == "minecraft_log");
             if (tc == null)
@@ -35,7 +35,7 @@ namespace mattbot.modules.general
                 return;
             }
 
-            var mc_registered = user.Guild.Roles.FirstOrDefault(x => x.Name == "MC Registered");
+            SocketRole mc_registered = user.Guild.Roles.FirstOrDefault(x => x.Name == "MC Registered");
             if (mc_registered == null)
                 return;
 
@@ -101,7 +101,7 @@ namespace mattbot.modules.general
         [SlashCommand("restart", "Restart the minecraft server")]
         public async Task RestartMCAsync()
         {
-            var owner = Context.Guild.GetUser(OWNER_ID);
+            SocketGuildUser owner = Context.Guild.GetUser(OWNER_ID);
             if (Context.User.Id != OWNER_ID)
             {
                 await RespondAsync($"{ERROR} Sorry, this command can only be used by {FormatUtil.formatUser(owner)}!", ephemeral: true);

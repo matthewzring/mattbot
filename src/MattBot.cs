@@ -48,7 +48,7 @@ namespace mattbot
 
         public async Task RunAsync()
         {
-            var client = _services.GetRequiredService<DiscordSocketClient>();
+            DiscordSocketClient client = _services.GetRequiredService<DiscordSocketClient>();
 
             client.Log += LogAsync;
 

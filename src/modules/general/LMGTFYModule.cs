@@ -1,4 +1,5 @@
 ﻿using Discord.Interactions;
+using Discord.WebSocket;
 
 namespace mattbot.modules.general
 {
@@ -8,12 +9,12 @@ namespace mattbot.modules.general
         [MessageCommand("LMGTFY")]
         public async Task LMGTFYCommand(IMessage message)
         {
-            var url = "https://lmgt.org/?q=";
-            var words = message.Content.Split(' ');
-            var query = string.Join("+", words);
-            var lmgtfyurl = url + query;
+            string url = "https://lmgt.org/?q=";
+            string[] words = message.Content.Split(' ');
+            string query = string.Join("+", words);
+            string lmgtfyurl = url + query;
 
-            var noContextCommands = Context.Guild.Roles.FirstOrDefault(role => role.Name == "No Context Commands");
+            SocketRole noContextCommands = Context.Guild.Roles.FirstOrDefault(role => role.Name == "No Context Commands");
             if (Context.User is IGuildUser guildUser && guildUser.RoleIds.Contains(noContextCommands.Id))
             {
                 await RespondAsync("You are prohibited from using this command!", ephemeral: true);
@@ -32,7 +33,7 @@ namespace mattbot.modules.general
                 return;
             }
 
-            var allowedMentions = new AllowedMentions { UserIds = new List<ulong> { message.Author.Id } };
+            AllowedMentions allowedMentions = new AllowedMentions { UserIds = new List<ulong> { message.Author.Id } };
             await RespondAsync($"{message.Author.Mention}, this might help:\n<{lmgtfyurl}>", allowedMentions: allowedMentions);
         }
     }

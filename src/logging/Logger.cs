@@ -26,7 +26,7 @@ namespace mattbot.logging
         public static async Task LogNameChange(SocketUser arg1, SocketUser arg2)
         {
             DateTimeOffset now = DateTimeOffset.UtcNow;
-            foreach (var guild in arg2.MutualGuilds)
+            foreach (SocketGuild guild in arg2.MutualGuilds)
             {
                 ITextChannel tc = guild.TextChannels.FirstOrDefault(x => x.Name == "serverlog");
                 if (tc != null)
@@ -65,7 +65,7 @@ namespace mattbot.logging
                 else
                 {
                     rlist = new StringBuilder($"\nRoles: `{user.Roles.Skip(1).First()}");
-                    foreach (var role in user.Roles.Skip(2))
+                    foreach (SocketRole role in user.Roles.Skip(2))
                         rlist.Append("`, `").Append(role.Name);
                     rlist.Append('`');
                 }
@@ -109,7 +109,7 @@ namespace mattbot.logging
             if (message.Author.Discriminator != "0000")
                 builder.Append("#").Append(message.Author.Discriminator);
             string author = builder.ToString();
-            var eb = new EmbedBuilder().WithAuthor(author, message.Author.GetAvatarUrl()).WithColor(0xFF0000).WithDescription(content).WithTimestamp(message.Timestamp);
+            EmbedBuilder eb = new EmbedBuilder().WithAuthor(author, message.Author.GetAvatarUrl()).WithColor(0xFF0000).WithDescription(content).WithTimestamp(message.Timestamp);
             if (imageurl is not null)
                 eb.WithImageUrl(imageurl);
             ITextChannel tc = client.GetGuild(TESTING_ID)?.TextChannels.FirstOrDefault(x => x.Name == "botlog");

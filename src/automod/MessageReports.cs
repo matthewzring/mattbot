@@ -59,8 +59,8 @@ namespace mattbot.automod
                 return;
 
             // Bot perms
-            var gUser = await guild.GetUserAsync(_client.CurrentUser.Id).ConfigureAwait(false);
-            var botPerms = gUser.GetPermissions(textChannel);
+            IGuildUser gUser = await guild.GetUserAsync(_client.CurrentUser.Id).ConfigureAwait(false);
+            ChannelPermissions botPerms = gUser.GetPermissions(textChannel);
             if (!botPerms.Has(ChannelPermission.ManageMessages))
                 return;
 
@@ -89,11 +89,11 @@ namespace mattbot.automod
                 return;
 
             // Look for a role called "No Reports"
-            var noReports = guild.Roles.FirstOrDefault(role => role.Name == "No Reports");
+            IRole noReports = guild.Roles.FirstOrDefault(role => role.Name == "No Reports");
 
             // Count all valid reactions
             // A reaction is considered "valid" if the user who reacted is not a bot, the message author, or prohibited from reacting
-            var count = 0;
+            int count = 0;
             IAsyncEnumerable<IReadOnlyCollection<IUser>> users = newMessage.GetReactionUsersAsync(reaction.Emote, int.MaxValue);
             StringBuilder rlist = new StringBuilder();
             await foreach (IReadOnlyCollection<IUser> chunk in users)
@@ -112,14 +112,14 @@ namespace mattbot.automod
             if (count < MESSAGE_REPORT_THRESHOLD)
                 return;
 
-            var eb = new EmbedBuilder().WithColor(0xFF0000).WithDescription(content + $"\n\n[Jump Link]({newMessage.GetJumpUrl()})");
+            EmbedBuilder eb = new EmbedBuilder().WithColor(0xFF0000).WithDescription(content + $"\n\n[Jump Link]({newMessage.GetJumpUrl()})");
 
             if (imageurl is not null)
                 eb.WithImageUrl(imageurl);
 
             try
             {
-                var now = DateTimeOffset.UtcNow;
+                DateTimeOffset now = DateTimeOffset.UtcNow;
                 await Logger.Log(now, tc, MESSAGE_REPORT_EMOJI, $"{FormatUtil.formatFullUser(newMessage.Author)}'s message was reported in {textChannel.Mention} by:\n\n{rlist}", eb.Build());
 
                 // Delete the message

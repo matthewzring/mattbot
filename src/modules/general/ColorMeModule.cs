@@ -13,7 +13,7 @@ namespace mattbot.modules.general
         [SlashCommand("colorme", "Set the color of your role")]
         public async Task ColorMeAsync([Summary("color", "#hexcode")] string hex)
         {
-            var user = Context.User as SocketGuildUser;
+            SocketGuildUser user = Context.User as SocketGuildUser;
             SocketRole colorRole = null;
             if (user.Roles.FirstOrDefault(x => x.Name == "Nitro Booster") != null || user.GuildPermissions.Has(GuildPermission.BanMembers))
             {

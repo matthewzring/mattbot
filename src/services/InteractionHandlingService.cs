@@ -35,40 +35,40 @@ namespace mattbot.services
 
         private async Task ReadyAsync()
         {
-            var cyberpatriotCommands = _commands.Modules
+            ModuleInfo[] cyberpatriotCommands = _commands.Modules
                 .Where(x => x.Attributes
                     .Any(y => y is CyberPatriotAttribute))
                 .ToArray();
             RestGuild cyberpatriot = await _client.Rest.GetGuildAsync(CYBERPATRIOT_ID);
             await _commands.AddModulesToGuildAsync(cyberpatriot, true, cyberpatriotCommands);
 
-            var ccdcCommands = _commands.Modules
+            ModuleInfo[] ccdcCommands = _commands.Modules
                 .Where(x => x.Attributes
                     .Any(y => y is CCDCAttribute))
                 .ToArray();
             RestGuild ccdc = await _client.Rest.GetGuildAsync(CCDC_ID);
             await _commands.AddModulesToGuildAsync(ccdc, true, ccdcCommands);
 
-            var cyberdiscordCommands = _commands.Modules
+            ModuleInfo[] cyberdiscordCommands = _commands.Modules
                 .Where(x => x.Attributes
                     .Any(y => y is CyberDiscordAttribute))
                 .ToArray();
             RestGuild cyberdiscord = await _client.Rest.GetGuildAsync(CYBERDISCORD_ID);
             await _commands.AddModulesToGuildAsync(cyberdiscord, true, cyberdiscordCommands);
 
-            var debugCommands = _commands.Modules
+            ModuleInfo[] debugCommands = _commands.Modules
                 .Where(x => x.Attributes
                     .Any(y => y is DebugAttribute))
                 .ToArray();
             RestGuild testing = await _client.Rest.GetGuildAsync(TESTING_ID);
             await _commands.AddModulesToGuildAsync(testing, true, debugCommands);
 
-            var ignoredCommands = _commands.Modules
+            ModuleInfo[] ignoredCommands = _commands.Modules
                 .Where(x => x.Attributes
                     .Any(y => y is IgnoreAttribute))
                 .ToArray();
 
-            var globalCommands = _commands.Modules
+            ModuleInfo[] globalCommands = _commands.Modules
                 .Where(x => !cyberpatriotCommands.Contains(x))
                 .Where(x => !ccdcCommands.Contains(x))
                 .Where(x => !cyberdiscordCommands.Contains(x))
@@ -82,7 +82,7 @@ namespace mattbot.services
         {
             try
             {
-                var ctx = new SocketInteractionContext(_client, arg);
+                SocketInteractionContext ctx = new SocketInteractionContext(_client, arg);
                 await _commands.ExecuteCommandAsync(ctx, _services);
             }
             catch (Exception ex)

@@ -40,7 +40,7 @@ namespace mattbot.automod
             IGuild guild = textChannel.Guild;
 
             // Look for a channel called gems
-            var gemChannel = (await guild.GetTextChannelsAsync())?.FirstOrDefault(x => x.Name == "gems");
+            ITextChannel gemChannel = (await guild.GetTextChannelsAsync())?.FirstOrDefault(x => x.Name == "gems");
             if (gemChannel == null)
                 return;
 
@@ -63,8 +63,8 @@ namespace mattbot.automod
                 return;
 
             // Bot perms
-            var gUser = await guild.GetUserAsync(_client.CurrentUser.Id).ConfigureAwait(false);
-            var botPerms = gUser.GetPermissions(gemChannel);
+            IGuildUser gUser = await guild.GetUserAsync(_client.CurrentUser.Id).ConfigureAwait(false);
+            ChannelPermissions botPerms = gUser.GetPermissions(gemChannel);
             if (!botPerms.Has(ChannelPermission.SendMessages))
                 return;
 
@@ -103,7 +103,7 @@ namespace mattbot.automod
                 return;
 
             // Look for a role called "No Gems"
-            var noGems = guild.Roles.FirstOrDefault(role => role.Name == "No Gems");
+            IRole noGems = guild.Roles.FirstOrDefault(role => role.Name == "No Gems");
 
             // Make sure the author does not have the "No Gems" role
             if (newMessage.Author is IGuildUser user && user.RoleIds.Contains(noGems.Id))
@@ -111,7 +111,7 @@ namespace mattbot.automod
 
             // Count all valid reactions
             // A reaction is considered "valid" if the user who reacted is not a bot, the message author, or prohibited from reacting
-            var count = 0;
+            int count = 0;
             IAsyncEnumerable<IReadOnlyCollection<IUser>> users = newMessage.GetReactionUsersAsync(reaction.Emote, int.MaxValue);
             await foreach (IReadOnlyCollection<IUser> chunk in users)
             {
@@ -130,7 +130,7 @@ namespace mattbot.automod
             if (newMessage.Author is SocketGuildUser guildUser)
             {
                 // Filters out any roles that are default color
-                var filterOutDefault = guildUser.Roles.Where(r => r.Color != Color.Default);
+                IEnumerable<SocketRole> filterOutDefault = guildUser.Roles.Where(r => r.Color != Color.Default);
 
                 if (!filterOutDefault.Count().Equals(0))
                     userHighestRoleColor = filterOutDefault.MaxBy(r => r.Position).Color;
@@ -142,7 +142,7 @@ namespace mattbot.automod
             if (newMessage.Author.Discriminator != "0000")
                 author.Append("#").Append(newMessage.Author.Discriminator);
 
-            var eb = new EmbedBuilder().WithAuthor(author.ToString(), newMessage.Author.GetAvatarUrl())
+            EmbedBuilder eb = new EmbedBuilder().WithAuthor(author.ToString(), newMessage.Author.GetAvatarUrl())
                                     .WithColor(userHighestRoleColor)
                                     .WithDescription(content + $"\n\n[Jump Link]({newMessage.GetJumpUrl()})")
                                     .WithTimestamp(newMessage.Timestamp);
@@ -150,7 +150,7 @@ namespace mattbot.automod
             if (imageurl is not null)
                 eb.WithImageUrl(imageurl);
 
-            var msg = await gemChannel.SendMessageAsync($"{GEM_EMOJI} {textChannel.Mention} `{message.Id}` {GEM_EMOJI}", embed: eb.Build()).ConfigureAwait(false);
+            IUserMessage msg = await gemChannel.SendMessageAsync($"{GEM_EMOJI} {textChannel.Mention} `{message.Id}` {GEM_EMOJI}", embed: eb.Build()).ConfigureAwait(false);
             await msg.AddReactionAsync(reaction.Emote);
         }
     }

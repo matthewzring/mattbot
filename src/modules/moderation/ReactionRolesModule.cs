@@ -10,8 +10,8 @@ namespace mattbot.modules.moderation
         [ComponentInteraction("role:*")]
         public async Task HandleReactionRole(ulong roleID)
         {
-            var name = Context.Guild.GetRole(roleID).Name;
-            var user = Context.User as SocketGuildUser;
+            string name = Context.Guild.GetRole(roleID).Name;
+            SocketGuildUser user = Context.User as SocketGuildUser;
             if (user.Roles.FirstOrDefault(x => x.Id == roleID) == null)
             {
                 await user.AddRoleAsync(roleID);

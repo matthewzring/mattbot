@@ -62,7 +62,7 @@ namespace mattbot.automod
                 return;
 
             // Bot perms
-            var gUser = await guild.GetUserAsync(_client.CurrentUser.Id).ConfigureAwait(false);
+            IGuildUser gUser = await guild.GetUserAsync(_client.CurrentUser.Id).ConfigureAwait(false);
             if (!gUser.GuildPermissions.ModerateMembers)
                 return;
 
@@ -95,11 +95,11 @@ namespace mattbot.automod
                 return;
 
             // Look for a role called "No Crowdmute"
-            var noCrowdmute = guild.Roles.FirstOrDefault(role => role.Name == "No Crowdmute");
+            IRole noCrowdmute = guild.Roles.FirstOrDefault(role => role.Name == "No Crowdmute");
 
             // Count all valid reactions
             // A reaction is considered "valid" if the user who reacted is not a bot, the message author, or prohibited from reacting
-            var count = 0;
+            int count = 0;
             IAsyncEnumerable<IReadOnlyCollection<IUser>> users = newMessage.GetReactionUsersAsync(reaction.Emote, int.MaxValue);
             StringBuilder rlist = new StringBuilder();
             await foreach (IReadOnlyCollection<IUser> chunk in users)
@@ -118,7 +118,7 @@ namespace mattbot.automod
             if (count < CROWD_MUTE_THRESHOLD)
                 return;
 
-            var eb = new EmbedBuilder().WithColor(0xFF0000).WithDescription(content + $"\n\n[Jump Link]({newMessage.GetJumpUrl()})");
+            EmbedBuilder eb = new EmbedBuilder().WithColor(0xFF0000).WithDescription(content + $"\n\n[Jump Link]({newMessage.GetJumpUrl()})");
 
             if (imageurl is not null)
                 eb.WithImageUrl(imageurl);
@@ -130,7 +130,7 @@ namespace mattbot.automod
                 RequestOptions reason = new RequestOptions { AuditLogReason = $"Crowd muted" };
                 await (newMessage.Author as IGuildUser).SetTimeOutAsync(interval, reason);
 
-                var now = DateTimeOffset.UtcNow;
+                DateTimeOffset now = DateTimeOffset.UtcNow;
                 await Logger.Log(now, tc, CROWD_MUTE_EMOJI, $"{FormatUtil.formatFullUser(newMessage.Author)} was crowd muted for {CROWD_MUTE_DURATION} minutes in {textChannel.Mention} by:\n\n{rlist}", eb.Build());
 
                 // Let everyone know the user has been timed out

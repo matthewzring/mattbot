@@ -13,7 +13,7 @@ namespace mattbot.modules.owner
         [SlashCommand("shutdown", "Terminates the bot instance")]
         public async Task ShutdownAsync()
         {
-            var owner = Context.Guild.GetUser(OWNER_ID);
+            SocketGuildUser owner = Context.Guild.GetUser(OWNER_ID);
             if (Context.User.Id != owner.Id)
             {
                 await RespondAsync($"{ERROR} Sorry, this command can only be used by {FormatUtil.formatUser(owner)}!", ephemeral: true);
@@ -45,7 +45,7 @@ namespace mattbot.modules.owner
                                             [Summary("activity", "The type of the activity")] int activityTypeValue,
                                             [Summary("name", "The name of the activity")] string name)
             {
-                var owner = Context.Guild.GetUser(OWNER_ID);
+                SocketGuildUser owner = Context.Guild.GetUser(OWNER_ID);
                 if (Context.User.Id != owner.Id)
                 {
                     await RespondAsync($"{ERROR} Sorry, this command can only be used by {FormatUtil.formatUser(owner)}!", ephemeral: true);
@@ -72,7 +72,7 @@ namespace mattbot.modules.owner
                                           Choice("Do Not Disturb", 4)]
                                           [Summary("status", "The status of the bot")] int userStatusValue)
             {
-                var owner = Context.Guild.GetUser(OWNER_ID);
+                SocketGuildUser owner = Context.Guild.GetUser(OWNER_ID);
                 if (Context.User.Id != owner.Id)
                 {
                     await RespondAsync($"{ERROR} Sorry, this command can only be used by {FormatUtil.formatUser(owner)}!", ephemeral: true);

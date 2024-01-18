@@ -1,4 +1,5 @@
 ﻿using Discord.Interactions;
+using Discord.WebSocket;
 
 using Color = Discord.Color;
 
@@ -38,14 +39,14 @@ namespace mattbot.modules.general
         public async Task GetShopAsync()
         {
             // Filters out any roles that are default color
-            var filterOutDefault = Context.Guild.CurrentUser.Roles.Where(r => r.Color != Color.Default);
+            IEnumerable<SocketRole> filterOutDefault = Context.Guild.CurrentUser.Roles.Where(r => r.Color != Color.Default);
 
             // Grabs the highest role and the color for it
             Color botHighestRoleColor = Color.Default;
             if (!filterOutDefault.Count().Equals(0))
                 botHighestRoleColor = filterOutDefault.MaxBy(r => r.Position).Color;
 
-            var eb = new EmbedBuilder().WithTitle("MattBucks Shop Inventory")
+            EmbedBuilder eb = new EmbedBuilder().WithTitle("MattBucks Shop Inventory")
                                         .WithColor(botHighestRoleColor)
                                         .AddField($"{SWORD} 1v1 Matt", "MattBucks Price: `100`\nPurchase Code: `1v1`\n1v1 matt in Valorant, League, TFT, Minecraft, Tetris or Chess", true)
                                         .AddField($"{NITRO} 1 Month Discord Nitro", "MattBucks Price: `1500`\nPurchase Code: `nitro`\nOne month of Discord Nitro, delivered via Discord", true)

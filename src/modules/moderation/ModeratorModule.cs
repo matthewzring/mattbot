@@ -24,8 +24,8 @@ namespace mattbot.modules.moderation
                 channel = Context.Channel as ITextChannel;
 
             // Bot perms
-            var gUser = await channel.Guild.GetUserAsync(Context.Client.CurrentUser.Id).ConfigureAwait(false);
-            var botPerms = gUser.GetPermissions(channel);
+            IGuildUser gUser = await channel.Guild.GetUserAsync(Context.Client.CurrentUser.Id).ConfigureAwait(false);
+            ChannelPermissions botPerms = gUser.GetPermissions(channel);
             if (!botPerms.Has(ChannelPermission.SendMessages))
                 await RespondAsync($"I do not have permissions to speak in {channel.Mention}!", ephemeral: true);
 
