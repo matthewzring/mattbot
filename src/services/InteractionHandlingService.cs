@@ -35,6 +35,12 @@ namespace mattbot.services
 
         private async Task ReadyAsync()
         {
+            // await _client.GetGuild(CYBERPATRIOT_ID).DeleteApplicationCommandsAsync();
+            // await _client.GetGuild(CCDC_ID).DeleteApplicationCommandsAsync();
+            // await _client.GetGuild(CYBERDISCORD_ID).DeleteApplicationCommandsAsync();
+            // await _client.GetGuild(TESTING_ID).DeleteApplicationCommandsAsync();
+            // await _client.Rest.DeleteAllGlobalCommandsAsync();
+
             ModuleInfo[] cyberpatriotCommands = _commands.Modules
                 .Where(x => x.Attributes
                     .Any(y => y is CyberPatriotAttribute))

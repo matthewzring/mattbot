@@ -3,10 +3,10 @@ using System.Diagnostics;
 
 namespace mattbot.modules.general
 {
+    [EnabledInDm(false)]
     public class PingModule : InteractionModuleBase<SocketInteractionContext>
     {
         // ping
-        [EnabledInDm(false)]
         [SlashCommand("ping", "Checks the bot's latency")]
         public async Task PingAsync()
         {

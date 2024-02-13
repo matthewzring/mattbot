@@ -1,7 +1,7 @@
 ﻿global using Discord;
 global using System.Text;
-global using System.Text.RegularExpressions;
 global using System.Reflection;
+global using System.Text.RegularExpressions;
 global using Microsoft.Extensions.Configuration;
 global using Microsoft.Extensions.DependencyInjection;
 global using mattbot.logging;
@@ -32,5 +32,8 @@ namespace mattbot
         // Emoji
         public const string SUCCESS = "\u2611\uFE0F"; // ☑️
         public const string ERROR = "\u274C"; // ❌
+        public const string WARN = "\u26A0\uFE0F"; // ⚠️
+
+        public const string LOADING = "<a:loading:1110293618222178324>";
     }
 }

@@ -39,11 +39,11 @@ namespace mattbot.modules.owner
             // admin set activity
             [SlashCommand("activity", "Set the bot's activity")]
             public async Task SetActivityAsync([Choice("Playing", 0),
-                                            Choice("Listening to", 2),
-                                            Choice("Watching", 3),
-                                            Choice("Competing in", 5)]
-                                            [Summary("activity", "The type of the activity")] int activityTypeValue,
-                                            [Summary("name", "The name of the activity")] string name)
+                                                Choice("Listening to", 2),
+                                                Choice("Watching", 3),
+                                                Choice("Competing in", 5)]
+                                               [Summary("activity", "The type of the activity")] int activityTypeValue,
+                                               [Summary("name", "The name of the activity")] string name)
             {
                 SocketGuildUser owner = Context.Guild.GetUser(OWNER_ID);
                 if (Context.User.Id != owner.Id)
@@ -68,9 +68,9 @@ namespace mattbot.modules.owner
             // admin set status
             [SlashCommand("status", "Set the bot's status")]
             public async Task SetStatusAsync([Choice("Online", 1),
-                                          Choice("Idle", 2),
-                                          Choice("Do Not Disturb", 4)]
-                                          [Summary("status", "The status of the bot")] int userStatusValue)
+                                              Choice("Idle", 2),
+                                              Choice("Do Not Disturb", 4)]
+                                             [Summary("status", "The status of the bot")] int userStatusValue)
             {
                 SocketGuildUser owner = Context.Guild.GetUser(OWNER_ID);
                 if (Context.User.Id != owner.Id)

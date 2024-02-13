@@ -4,7 +4,8 @@ using mattbot.utils;
 
 namespace mattbot.modules.general
 {
-    [CyberPatriot]
+    [Ignore]
+    [EnabledInDm(false)]
     public class MinecraftModule : InteractionModuleBase<SocketInteractionContext>
     {
         private const string PICK = "\u26CF\uFE0F"; // ⛏️
@@ -17,7 +18,6 @@ namespace mattbot.modules.general
         }
 
         // register
-        [EnabledInDm(false)]
         [SlashCommand("register", "Register your Minecraft account")]
         public async Task RegisterMCAsync([Summary("username", "Your Minecraft username")] string username)
         {
@@ -96,7 +96,6 @@ namespace mattbot.modules.general
         }
 
         // restart
-        [EnabledInDm(false)]
         [DefaultMemberPermissions(GuildPermission.Administrator)]
         [SlashCommand("restart", "Restart the minecraft server")]
         public async Task RestartMCAsync()

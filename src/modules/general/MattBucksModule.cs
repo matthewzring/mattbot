@@ -1,6 +1,5 @@
 ﻿using Discord.Interactions;
 using Discord.WebSocket;
-
 using Color = Discord.Color;
 
 namespace mattbot.modules.general

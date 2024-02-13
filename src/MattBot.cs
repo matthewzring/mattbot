@@ -1,8 +1,8 @@
-﻿using mattbot.services;
-using Discord.Commands;
+﻿using Discord.Commands;
 using Discord.Interactions;
 using Discord.WebSocket;
 using mattbot.automod;
+using mattbot.services;
 
 namespace mattbot
 {
@@ -22,7 +22,7 @@ namespace mattbot
 
             _client = new DiscordSocketClient(new DiscordSocketConfig
             {
-                GatewayIntents = GatewayIntents.AllUnprivileged | GatewayIntents.GuildMessageReactions | GatewayIntents.MessageContent | GatewayIntents.GuildMembers,
+                GatewayIntents = GatewayIntents.AllUnprivileged | GatewayIntents.MessageContent | GatewayIntents.GuildMembers,
                 AlwaysDownloadUsers = true,
                 MessageCacheSize = 100
             });
@@ -36,10 +36,10 @@ namespace mattbot
                 .AddSingleton<InteractionService>()
                 .AddSingleton<InteractionHandlingService>()
                 .AddSingleton(new Listener(_client))
+                .AddSingleton<CrowdMute>()
                 .AddSingleton<Gems>()
                 .AddSingleton<MessageReports>()
                 .AddSingleton<Users>()
-                .AddSingleton<CrowdMute>()
                 .BuildServiceProvider();
         }
 
@@ -54,10 +54,10 @@ namespace mattbot
 
             await _services.GetRequiredService<CommandHandlingService>().InitializeAsync();
             await _services.GetRequiredService<InteractionHandlingService>().InitializeAsync();
+            await _services.GetRequiredService<CrowdMute>().InitializeAsync();
             await _services.GetRequiredService<Gems>().InitializeAsync();
             await _services.GetRequiredService<MessageReports>().InitializeAsync();
             await _services.GetRequiredService<Users>().InitializeAsync();
-            await _services.GetRequiredService<CrowdMute>().InitializeAsync();
 
             Enum.TryParse(_configuration["activity"], out ActivityType activityType);
             await client.SetGameAsync(_configuration["status"], type: activityType);

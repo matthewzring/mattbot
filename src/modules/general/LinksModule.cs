@@ -4,6 +4,7 @@ using Discord.WebSocket;
 namespace mattbot.modules.general
 {
     [CyberPatriot]
+    [EnabledInDm(false)]
     public class LinksModule : InteractionModuleBase<SocketInteractionContext>
     {
         private const string RULESBOOK = "https://www.uscyberpatriot.org/competition/rules-book";
@@ -12,7 +13,6 @@ namespace mattbot.modules.general
         private const string ADVANCEMENT = "https://www.uscyberpatriot.org/competition/Competition-Overview/tiers-and-advancement";
         private const string CONTACT = "https://www.uscyberpatriot.org/Pages/About/Contact-Us.aspx";
 
-        [EnabledInDm(false)]
         [UserCommand("Rules Book")]
         public async Task HandleRulesBookCommand(IUser user)
         {
@@ -30,7 +30,6 @@ namespace mattbot.modules.general
             await RespondAsync($"{user.Mention}, please read the rules book:\n{RULESBOOK}");
         }
 
-        [EnabledInDm(false)]
         [UserCommand("Competition Schedule")]
         public async Task HandleCompetitionScheduleCommand(IUser user)
         {
@@ -48,7 +47,6 @@ namespace mattbot.modules.general
             await RespondAsync($"{user.Mention}, please see the CyberPatriot website:\n{SCHEDULE}");
         }
 
-        [EnabledInDm(false)]
         [UserCommand("Challenges by Round")]
         public async Task HandleChallengesByRoundCommand(IUser user)
         {
@@ -66,7 +64,6 @@ namespace mattbot.modules.general
             await RespondAsync($"{user.Mention}, please see the CyberPatriot website:\n{CHALLENGES}");
         }
 
-        [EnabledInDm(false)]
         [UserCommand("Tiers & Advancement")]
         public async Task HandleTiersAndAdvancementCommand(IUser user)
         {
@@ -84,7 +81,6 @@ namespace mattbot.modules.general
             await RespondAsync($"{user.Mention}, please see the CyberPatriot website:\n{ADVANCEMENT}");
         }
 
-        [EnabledInDm(false)]
         [UserCommand("Contact")]
         public async Task HandleContactCommand(IUser user)
         {

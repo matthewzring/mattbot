@@ -6,10 +6,10 @@ namespace mattbot.modules.general
 {
     [CyberPatriot]
     [CCDC]
+    [EnabledInDm(false)]
     public class ColorMeModule : InteractionModuleBase<SocketInteractionContext>
     {
         // colorme
-        [EnabledInDm(false)]
         [SlashCommand("colorme", "Set the color of your role")]
         public async Task ColorMeAsync([Summary("color", "#hexcode")] string hex)
         {
@@ -27,7 +27,7 @@ namespace mattbot.modules.general
                 await SetRoleColor(colorRole.Id, hex);
         }
 
-        public async Task SetRoleColor(ulong roleID, string hex)
+        private async Task SetRoleColor(ulong roleID, string hex)
         {
             if (hex[0].Equals('#'))
                 hex = hex.Remove(0, 1);

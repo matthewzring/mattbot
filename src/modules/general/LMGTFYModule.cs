@@ -3,9 +3,9 @@ using Discord.WebSocket;
 
 namespace mattbot.modules.general
 {
+    [EnabledInDm(false)]
     public class LMGTFYModule : InteractionModuleBase<SocketInteractionContext>
     {
-        [EnabledInDm(false)]
         [MessageCommand("LMGTFY")]
         public async Task LMGTFYCommand(IMessage message)
         {
