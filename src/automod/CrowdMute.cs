@@ -1,5 +1,5 @@
-﻿using mattbot.services;
-using Discord.WebSocket;
+﻿using Discord.WebSocket;
+using mattbot.services;
 using mattbot.utils;
 
 namespace mattbot.automod
@@ -74,10 +74,6 @@ namespace mattbot.automod
             if ((newMessage.Timestamp - DateTimeOffset.UtcNow).TotalMinutes <= -CROWD_MUTE_DURATION)
                 return;
 
-            // User is already timed out
-            if (((newMessage.Author as IGuildUser).TimedOutUntil != null) && !((newMessage.Author as IGuildUser).TimedOutUntil - DateTimeOffset.UtcNow).ToString()[0].Equals('-'))
-                return;
-
             // Check if message is replying to someone
             StringBuilder builder = new StringBuilder();
             if (newMessage.Reference is not null)
@@ -123,20 +119,20 @@ namespace mattbot.automod
             if (imageurl is not null)
                 eb.WithImageUrl(imageurl);
 
-            try
-            {
-                // Timeout the user
-                TimeSpan interval = new TimeSpan(0, CROWD_MUTE_DURATION, 0);
-                RequestOptions reason = new RequestOptions { AuditLogReason = $"Crowd muted" };
-                await (newMessage.Author as IGuildUser).SetTimeOutAsync(interval, reason);
+            // Check if the user is already timed out
+            if (((newMessage.Author as IGuildUser).TimedOutUntil != null) && !((newMessage.Author as IGuildUser).TimedOutUntil - DateTimeOffset.UtcNow).ToString()[0].Equals('-'))
+                return;
 
-                DateTimeOffset now = DateTimeOffset.UtcNow;
-                await Logger.Log(now, tc, CROWD_MUTE_EMOJI, $"{FormatUtil.formatFullUser(newMessage.Author)} was crowd muted for {CROWD_MUTE_DURATION} minutes in {textChannel.Mention} by:\n\n{rlist}", eb.Build());
+            // Timeout the user
+            TimeSpan interval = new TimeSpan(0, CROWD_MUTE_DURATION, 0);
+            RequestOptions reason = new RequestOptions { AuditLogReason = $"Crowd muted" };
+            await (newMessage.Author as IGuildUser).SetTimeOutAsync(interval, reason);
 
-                // Let everyone know the user has been timed out
-                await newMessage.ReplyAsync($"This user has been crowd muted for {CROWD_MUTE_DURATION} minutes.");
-            }
-            catch (Exception) { } 
+            DateTimeOffset now = DateTimeOffset.UtcNow;
+            await Logger.Log(now, tc, CROWD_MUTE_EMOJI, $"{FormatUtil.formatFullUser(newMessage.Author)} was crowd muted for {CROWD_MUTE_DURATION} minutes in {textChannel.Mention} by:\n\n{rlist}", eb.Build());
+
+            // Let everyone know the user has been timed out
+            await newMessage.ReplyAsync($"This user has been crowd muted for {CROWD_MUTE_DURATION} minutes.");
         }
     }
 }

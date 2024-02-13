@@ -72,12 +72,6 @@ namespace mattbot.automod
             if ((newMessage.Timestamp - DateTimeOffset.UtcNow).TotalHours <= -GEM_DURATION)
                 return;
 
-            // Message has already been gemmed
-            IEnumerable<IMessage> gemposts = await gemChannel.GetMessagesAsync(10).FlattenAsync().ConfigureAwait(false);
-            foreach (IMessage gempost in gemposts)
-                if (gempost.Content.Contains(message.Id.ToString()))
-                    return;
-
             // Check if message is replying to someone
             StringBuilder builder = new StringBuilder();
             if (newMessage.Reference is not null)
@@ -150,6 +144,13 @@ namespace mattbot.automod
             if (imageurl is not null)
                 eb.WithImageUrl(imageurl);
 
+            // Check if the message has already been gemmed
+            IEnumerable<IMessage> gemposts = await gemChannel.GetMessagesAsync(10).FlattenAsync().ConfigureAwait(false);
+            foreach (IMessage gempost in gemposts)
+                if (gempost.Content.Contains(message.Id.ToString()))
+                    return;
+
+            // Post the message
             IUserMessage msg = await gemChannel.SendMessageAsync($"{GEM_EMOJI} {textChannel.Mention} `{message.Id}` {GEM_EMOJI}", embed: eb.Build()).ConfigureAwait(false);
             await msg.AddReactionAsync(reaction.Emote);
         }

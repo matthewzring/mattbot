@@ -1,5 +1,5 @@
-﻿using mattbot.services;
-using Discord.WebSocket;
+﻿using Discord.WebSocket;
+using mattbot.services;
 using mattbot.utils;
 
 namespace mattbot.automod
@@ -117,15 +117,11 @@ namespace mattbot.automod
             if (imageurl is not null)
                 eb.WithImageUrl(imageurl);
 
-            try
-            {
-                DateTimeOffset now = DateTimeOffset.UtcNow;
-                await Logger.Log(now, tc, MESSAGE_REPORT_EMOJI, $"{FormatUtil.formatFullUser(newMessage.Author)}'s message was reported in {textChannel.Mention} by:\n\n{rlist}", eb.Build());
+            DateTimeOffset now = DateTimeOffset.UtcNow;
+            await Logger.Log(now, tc, MESSAGE_REPORT_EMOJI, $"{FormatUtil.formatFullUser(newMessage.Author)}'s message was reported in {textChannel.Mention} by:\n\n{rlist}", eb.Build());
 
-                // Delete the message
-                await newMessage.DeleteAsync();
-            }
-            catch (Exception) { }
+            // Delete the message
+            await newMessage.DeleteAsync();
         }
     }
 }
