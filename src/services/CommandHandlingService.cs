@@ -15,8 +15,6 @@ namespace mattbot.services
             _discord = services.GetRequiredService<DiscordSocketClient>();
             _services = services;
 
-            // Hook CommandExecuted to handle post-command-execution logic.
-            _commands.CommandExecuted += CommandExecutedAsync;
             // Hook MessageReceived so we can process each message to see if it qualifies as a command.
             _discord.MessageReceived += MessageReceivedAsync;
         }
@@ -37,33 +35,13 @@ namespace mattbot.services
 
             // This value holds the offset where the prefix ends
             int argPos = 0;
-            // Perform prefix check. You may want to replace this with
-            // (!message.HasCharPrefix('!', ref argPos))
-            // for a more traditional command format like !help.
-            // if (!message.HasMentionPrefix(_discord.CurrentUser, ref argPos))
-            //     return;
 
+            // Create a WebSocket-based command context based on the message
             SocketCommandContext context = new SocketCommandContext(_discord, message);
-            // Perform the execution of the command. In this method,
-            // the command service will perform precondition and parsing check
-            // then execute the command if one is matched.
+
+            // Execute the command with the command context we just
+            // created, along with the service provider for precondition checks.
             await _commands.ExecuteAsync(context, argPos, _services);
-            // Note that normally a result will be returned by this format, but here
-            // we will handle the result in CommandExecutedAsync,
-        }
-
-        public async Task CommandExecutedAsync(Optional<CommandInfo> command, ICommandContext context, IResult result)
-        {
-            // Command is unspecified when there was a search failure (command not found); we don't care about these errors
-            if (!command.IsSpecified)
-                return;
-
-            // The command was successful, we don't care about this result, unless we want to log that a command succeeded.
-            if (result.IsSuccess)
-                return;
-
-            // The command failed, let's notify the user that something happened.
-            await context.Channel.SendMessageAsync(ERROR_MESSAGE);
         }
     }
 }
