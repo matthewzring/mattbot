@@ -5,7 +5,6 @@ using Color = Discord.Color;
 namespace mattbot.modules.general
 {
     [Ignore]
-    [EnabledInDm(false)]
     [Group("matt", "matt bucks commands")]
     public class MattBucksModule : InteractionModuleBase<SocketInteractionContext>
     {

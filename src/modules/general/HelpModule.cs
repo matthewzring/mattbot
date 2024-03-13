@@ -2,10 +2,10 @@
 
 namespace mattbot.modules.general
 {
-    [EnabledInDm(false)]
     public class HelpModule : InteractionModuleBase<SocketInteractionContext>
     {
         // help
+        [EnabledInDm(false)]
         [SlashCommand("help", "Sends help")]
         public async Task HelpAsync()
         {

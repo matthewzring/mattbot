@@ -4,7 +4,6 @@ using Discord.WebSocket;
 namespace mattbot.modules.moderation
 {
     [CyberPatriot]
-    [EnabledInDm(false)]
     [DefaultMemberPermissions(GuildPermission.BanMembers)]
     [Group("lockdown", "Set the server lockdown status")]
     public class LockdownModule : InteractionModuleBase<SocketInteractionContext>

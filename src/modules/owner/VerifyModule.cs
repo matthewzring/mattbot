@@ -5,7 +5,6 @@ using mattbot.utils;
 namespace mattbot.modules.owner
 {
     [CyberPatriot]
-    [EnabledInDm(false)]
     [DefaultMemberPermissions(GuildPermission.Administrator)]
     public class VerifyModule : InteractionModuleBase<SocketInteractionContext>
     {

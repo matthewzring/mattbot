@@ -4,12 +4,12 @@ using mattbot.utils;
 
 namespace mattbot.modules.owner
 {
-    [EnabledInDm(false)]
     [Group("admin", "admin commands")]
     [DefaultMemberPermissions(GuildPermission.Administrator)]
     public class AdminModule : InteractionModuleBase<SocketInteractionContext>
     {
         // admin shutdown
+        [EnabledInDm(false)]
         [SlashCommand("shutdown", "Terminates the bot instance")]
         public async Task ShutdownAsync()
         {
@@ -37,6 +37,7 @@ namespace mattbot.modules.owner
             }
 
             // admin set activity
+            [EnabledInDm(false)]
             [SlashCommand("activity", "Set the bot's activity")]
             public async Task SetActivityAsync([Choice("Playing", 0),
                                                 Choice("Listening to", 2),
@@ -66,6 +67,7 @@ namespace mattbot.modules.owner
             }
 
             // admin set status
+            [EnabledInDm(false)]
             [SlashCommand("status", "Set the bot's status")]
             public async Task SetStatusAsync([Choice("Online", 1),
                                               Choice("Idle", 2),

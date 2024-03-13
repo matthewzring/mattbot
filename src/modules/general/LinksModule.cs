@@ -4,7 +4,6 @@ using Discord.WebSocket;
 namespace mattbot.modules.general
 {
     [CyberPatriot]
-    [EnabledInDm(false)]
     public class LinksModule : InteractionModuleBase<SocketInteractionContext>
     {
         private const string RULESBOOK = "https://www.uscyberpatriot.org/competition/rules-book";

@@ -2,11 +2,11 @@
 
 namespace mattbot.modules.moderation
 {
-    [EnabledInDm(false)]
     [DefaultMemberPermissions(GuildPermission.BanMembers)]
     public class AnnounceModule : InteractionModuleBase<SocketInteractionContext>
     {
         // announce
+        [EnabledInDm(false)]
         [SlashCommand("announce", "Announce a message")]
         public async Task AnnounceAsync([Summary("message", "Announcement message")] string message,
                                         [Summary("channel", "Channel to send the message in. Leave blank for current channel")] ITextChannel channel = null)

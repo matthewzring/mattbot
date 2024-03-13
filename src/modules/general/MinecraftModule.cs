@@ -5,7 +5,6 @@ using mattbot.utils;
 namespace mattbot.modules.general
 {
     [Ignore]
-    [EnabledInDm(false)]
     public class MinecraftModule : InteractionModuleBase<SocketInteractionContext>
     {
         private const string PICK = "\u26CF\uFE0F"; // ⛏️

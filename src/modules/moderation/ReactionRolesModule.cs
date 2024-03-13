@@ -3,10 +3,10 @@ using Discord.WebSocket;
 
 namespace mattbot.modules.moderation
 {
+    [RequireContext(ContextType.Guild)]
     public class ReactionRolesModule : InteractionModuleBase<SocketInteractionContext>
     {
         // Handle reaction roles
-        [RequireContext(ContextType.Guild)]
         [ComponentInteraction("role:*")]
         public async Task HandleReactionRole(ulong roleID)
         {

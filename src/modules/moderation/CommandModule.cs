@@ -3,9 +3,9 @@ using Discord.WebSocket;
 
 namespace mattbot.modules.moderation
 {
+    [RequireContext(ContextType.Guild)]
     public class CommandModule : ModuleBase<SocketCommandContext>
     {
-        [RequireContext(ContextType.Guild)]
         [Command("!scoreboard")]
         [Alias("!leaderboard", "!help", "!team", "!archive", "!datasource", "!listarchives", "!listdatasources", "!ping")]
         public async Task CyberScoresCommandsAsync([Remainder] string text = null)

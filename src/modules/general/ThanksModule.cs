@@ -2,6 +2,7 @@
 
 namespace mattbot.modules.general
 {
+    [RequireContext(ContextType.Guild)]
     public class ThanksModule : ModuleBase<SocketCommandContext>
     {
         private static readonly Random random = new Random();

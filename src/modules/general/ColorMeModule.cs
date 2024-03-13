@@ -6,7 +6,6 @@ namespace mattbot.modules.general
 {
     [CyberPatriot]
     [CCDC]
-    [EnabledInDm(false)]
     public class ColorMeModule : InteractionModuleBase<SocketInteractionContext>
     {
         // colorme
