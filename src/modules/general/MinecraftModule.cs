@@ -7,7 +7,7 @@ namespace mattbot.modules.general
     [Ignore]
     public class MinecraftModule : InteractionModuleBase<SocketInteractionContext>
     {
-        private const string PICK = "\u26CF\uFE0F"; // ⛏️
+        private static readonly string PICK = "\u26CF\uFE0F"; // ⛏️
 
         private readonly IConfiguration _configuration;
 
@@ -34,7 +34,7 @@ namespace mattbot.modules.general
                 return;
             }
 
-            SocketRole mc_registered = user.Guild.Roles.FirstOrDefault(x => x.Name == "MC Registered");
+            SocketRole mc_registered = user.Guild.Roles.FirstOrDefault(x => x.Id == 1094750546734370846);
             if (mc_registered == null)
                 return;
 

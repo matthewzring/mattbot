@@ -26,7 +26,6 @@ namespace mattbot.automod
         {
             int.TryParse(_configuration["message_report_threshold"], out int MESSAGE_REPORT_THRESHOLD);
             int.TryParse(_configuration["message_report_duration"], out int MESSAGE_REPORT_DURATION);
-            string MESSAGE_REPORT_EMOJI = _configuration["message_report_emoji"];
 
             if (!reaction.User.IsSpecified
                 || reaction.User.Value.IsBot
@@ -51,7 +50,8 @@ namespace mattbot.automod
                 newMessage = message.Value;
 
             // Reaction emoji
-            if (!Equals(reaction.Emote, new Emoji(MESSAGE_REPORT_EMOJI)))
+            Emoji wastebasket = new("\uD83D\uDDD1\uFE0F"); // 🗑️
+            if (!Equals(reaction.Emote, wastebasket))
                 return;
 
             // Ignore system messages
@@ -75,7 +75,7 @@ namespace mattbot.automod
             // Check if message is replying to someone
             StringBuilder builder = new StringBuilder();
             if (newMessage.Reference is not null)
-                builder.Append(newMessage.ReferencedMessage.Author.Mention).Append("\n");
+                builder.Append(newMessage.ReferencedMessage.Author.Mention).Append(" ");
 
             // Get the contents of the message
             string content;
@@ -118,7 +118,8 @@ namespace mattbot.automod
                 eb.WithImageUrl(imageurl);
 
             DateTimeOffset now = DateTimeOffset.UtcNow;
-            await Logger.Log(now, tc, MESSAGE_REPORT_EMOJI, $"{FormatUtil.formatFullUser(newMessage.Author)}'s message was reported in {textChannel.Mention} by:\n\n{rlist}", eb.Build());
+            // TODO add a separate logger for community vote tools
+            await Logger.Log(now, tc, WARN, $"{FormatUtil.formatFullUser(newMessage.Author)}'s message was reported in {textChannel.Mention} by:\n\n{rlist}", eb.Build());
 
             // Delete the message
             await newMessage.DeleteAsync();

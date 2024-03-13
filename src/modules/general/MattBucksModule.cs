@@ -8,12 +8,13 @@ namespace mattbot.modules.general
     [Group("matt", "matt bucks commands")]
     public class MattBucksModule : InteractionModuleBase<SocketInteractionContext>
     {
-        private const string CONSTRUCTION = "\uD83D\uDEA7"; // 🚧
-        private const string SWORD = "\u2694\uFE0F"; // ⚔️
-        private const string WATER = "\uD83D\uDCA7"; // 💧
+        private static readonly string CONSTRUCTION = "\uD83D\uDEA7"; // 🚧
+        private static readonly string SWORD = "\u2694\uFE0F"; // ⚔️
+        private static readonly string WATER = "\uD83D\uDCA7"; // 💧
 
-        private const string NITRO = "<:nitro:1091272926881390634>";
-        private const string PING = "<:ping:1091272927737036953>";
+        private static readonly string NITRO = "<:nitro:1091272926881390634>";
+        private static readonly string PING = "<:ping:1091272927737036953>";
+        private static readonly string MATTBUCKS = "<:MattBucks:1091275681024970853>";
 
         [SlashCommand("explanation", "explains what MattBucks are")]
         public async Task ExplanationAsync()
@@ -26,8 +27,8 @@ namespace mattbot.modules.general
                 $"`/matt purchase <item>` - buys an item from the shop\n\n" +
                 $"Ways to earn MattBucks:\n" +
                 $"`1.` __Nitro Boosting__ ~ Every 6 hours, anyone boosting any of the following servers gets 1 MattBuck\n" +
-                $"\t\t- *CyberPatriot* (<{CYBERPATRIOT_SERVER_INVITE}>)\n" +
-                $"\t\t- *CCDC* (<{CCDC_SERVER_INVITE}>)\n" +
+                $"\t\t\\- *CyberPatriot* (<{CYBERPATRIOT_SERVER_INVITE}>)\n" +
+                $"\t\t\\- *CCDC* (<{CCDC_SERVER_INVITE}>)\n" +
                 $"`2.` __Twitch__ ~ Every 6 hours, anyone subscribed to matt's Twitch channel gets 1 MattBuck\n" +
                 $"`3.` __Giveaways__ ~ Sometimes matt will just give away MattBucks randomly\n" +
                 $"Note: All the above methods stack; if you're boosting in Discord and subscribed on Twitch, you'll earn 2 MattBucks every 6 hours.", ephemeral: true);
@@ -58,7 +59,7 @@ namespace mattbot.modules.general
         [SlashCommand("bucks", "shows how many MattBucks you have")]
         public async Task CheckCoinsAsync()
         {
-            await RespondAsync($"{CONSTRUCTION} Uh oh, we're still getting stuff set up here, check back later! {CONSTRUCTION}", ephemeral: true);
+            await RespondAsync($"{Context.User.Mention}, you have `1` MattBucks! {MATTBUCKS}", ephemeral: true);
         }
 
         [SlashCommand("purchase", "buys an item from the shop")]
@@ -71,6 +72,13 @@ namespace mattbot.modules.general
         public async Task CheckRichestAsync()
         {
             await RespondAsync($"{CONSTRUCTION} Uh oh, we're still getting stuff set up here, check back later! {CONSTRUCTION}", ephemeral: true);
+        }
+
+        [DefaultMemberPermissions(GuildPermission.Administrator)]
+        [SlashCommand("modify", "modify a user's MattBucks")]
+        public async Task ModifyAsync()
+        {
+            await RespondAsync($"Adding 1 mattbucks...\n@user: 1");
         }
     }
 }

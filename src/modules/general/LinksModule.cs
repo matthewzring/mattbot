@@ -6,11 +6,11 @@ namespace mattbot.modules.general
     [CyberPatriot]
     public class LinksModule : InteractionModuleBase<SocketInteractionContext>
     {
-        private const string RULESBOOK = "https://www.uscyberpatriot.org/competition/rules-book";
-        private const string SCHEDULE = "https://www.uscyberpatriot.org/competition/current-competition/competition-schedule";
-        private const string CHALLENGES = "https://www.uscyberpatriot.org/competition/current-competition/challenges-by-round";
-        private const string ADVANCEMENT = "https://www.uscyberpatriot.org/competition/Competition-Overview/tiers-and-advancement";
-        private const string CONTACT = "https://www.uscyberpatriot.org/Pages/About/Contact-Us.aspx";
+        private static readonly string RULESBOOK = "https://www.uscyberpatriot.org/competition/rules-book";
+        private static readonly string SCHEDULE = "https://www.uscyberpatriot.org/competition/current-competition/competition-schedule";
+        private static readonly string CHALLENGES = "https://www.uscyberpatriot.org/competition/current-competition/challenges-by-round";
+        private static readonly string ADVANCEMENT = "https://www.uscyberpatriot.org/competition/Competition-Overview/tiers-and-advancement";
+        private static readonly string CONTACT = "https://www.uscyberpatriot.org/Pages/About/Contact-Us.aspx";
 
         [UserCommand("Rules Book")]
         public async Task HandleRulesBookCommand(IUser user)

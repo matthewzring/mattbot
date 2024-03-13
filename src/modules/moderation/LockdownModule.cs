@@ -8,8 +8,8 @@ namespace mattbot.modules.moderation
     [Group("lockdown", "Set the server lockdown status")]
     public class LockdownModule : InteractionModuleBase<SocketInteractionContext>
     {
-        private const string LOCK = "\uD83D\uDD12"; // 🔒
-        private const string UNLOCK = "\uD83D\uDD13"; // 🔓
+        private static readonly string LOCK = "\uD83D\uDD12"; // 🔒
+        private static readonly string UNLOCK = "\uD83D\uDD13"; // 🔓
 
         // lockdown toggle
         [SlashCommand("toggle", "Toggle the server lockdown status")]
@@ -109,6 +109,8 @@ namespace mattbot.modules.moderation
                     // Lock more channels
                     // Remove embed links and image permissions
                     goto case 1;
+                default:
+                    break;
             }
         }
     }

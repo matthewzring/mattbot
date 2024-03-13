@@ -38,7 +38,7 @@ namespace mattbot.services
             // await _client.GetGuild(CYBERPATRIOT_ID).DeleteApplicationCommandsAsync();
             // await _client.GetGuild(CCDC_ID).DeleteApplicationCommandsAsync();
             // await _client.GetGuild(CYBERDISCORD_ID).DeleteApplicationCommandsAsync();
-            // await _client.GetGuild(TESTING_ID).DeleteApplicationCommandsAsync();
+            // await _client.GetGuild(MATTLOUNGE_ID).DeleteApplicationCommandsAsync();
             // await _client.Rest.DeleteAllGlobalCommandsAsync();
 
             ModuleInfo[] cyberpatriotCommands = _commands.Modules
@@ -66,8 +66,8 @@ namespace mattbot.services
                 .Where(x => x.Attributes
                     .Any(y => y is DebugAttribute))
                 .ToArray();
-            RestGuild testing = await _client.Rest.GetGuildAsync(TESTING_ID);
-            await _commands.AddModulesToGuildAsync(testing, true, debugCommands);
+            RestGuild mattlounge = await _client.Rest.GetGuildAsync(MATTLOUNGE_ID);
+            await _commands.AddModulesToGuildAsync(mattlounge, true, debugCommands);
 
             ModuleInfo[] ignoredCommands = _commands.Modules
                 .Where(x => x.Attributes

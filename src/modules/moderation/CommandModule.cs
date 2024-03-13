@@ -20,22 +20,21 @@ namespace mattbot.modules.moderation
             if (user.GuildPermissions.Has(GuildPermission.BanMembers))
                 return;
 
+            // Get channels
+            SocketTextChannel vip_commands = Context.Guild.GetTextChannel(1030664143528792084);
+            SocketTextChannel comp_results = Context.Guild.GetTextChannel(473981770791124992);
+            if (vip_commands == null || comp_results == null)
+                return;
+
             // Warn user
-            if (Context.Channel.Name != "vip_commands" && Context.Channel.Name != "comp_results")
+            if (!Context.Channel.Equals(vip_commands) && !Context.Channel.Equals(comp_results))
             {
                 StringBuilder builder = new StringBuilder("Please use ");
-                if (user.Roles.FirstOrDefault(x => x.Name == "Nitro Booster") != null)
+                if (user.Roles.FirstOrDefault(x => x.Id == 591801562922483712) != null)
                 {
-                    SocketGuildChannel vip_commands = Context.Guild.Channels.FirstOrDefault(x => x.Name == "vip_commands");
-                    if (vip_commands == null)
-                        return;
-                    builder.Append("<#").Append(vip_commands.Id).Append("> or ");
+                    builder.Append(vip_commands.Mention).Append(" or ");
                 }
-                SocketGuildChannel comp_results = Context.Guild.Channels.FirstOrDefault(x => x.Name == "comp_results");
-                if (comp_results == null)
-                    return;
-                builder.Append("<#").Append(comp_results.Id).Append("> for commands.");
-
+                builder.Append(comp_results.Mention).Append(" for commands.");
                 await ReplyAsync(builder.ToString());
             }
         }

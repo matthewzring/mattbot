@@ -13,27 +13,27 @@ namespace mattbot
     public class Globals
     {
         // Links
-        public const string CYBERPATRIOT_SERVER_INVITE = "https://discord.gg/cyberpatriot";
-        public const string CCDC_SERVER_INVITE = "https://discord.gg/fFX7fJy6Vj";
+        public static readonly string CYBERPATRIOT_SERVER_INVITE = "https://discord.gg/cyberpatriot";
+        public static readonly string CCDC_SERVER_INVITE = "https://discord.gg/fFX7fJy6Vj";
 
         // Strings
-        public const string ERROR_MESSAGE = "An error occured: Please contact **matthewzring** for help.";
+        public static readonly string ERROR_MESSAGE = "An error occured: Please contact **matthewzring** for help.";
 
         // People
-        public const ulong OWNER_ID = 349007194768801792;
+        public static readonly ulong OWNER_ID = 349007194768801792;
 
         // Servers
-        public const ulong CYBERPATRIOT_ID = 301768361136750592;
-        public const ulong FINALISTS_ID = 546405227092508683;
-        public const ulong TESTING_ID = 372483060769357824;
-        public const ulong CCDC_ID = 1093372273295101992;
-        public const ulong CYBERDISCORD_ID = 1105972904711176262;
+        public static readonly ulong CYBERPATRIOT_ID = 301768361136750592;
+        public static readonly ulong FINALISTS_ID = 546405227092508683;
+        public static readonly ulong MATTLOUNGE_ID = 372483060769357824;
+        public static readonly ulong CCDC_ID = 1093372273295101992;
+        public static readonly ulong CYBERDISCORD_ID = 1105972904711176262;
 
         // Emoji
-        public const string SUCCESS = "\u2611\uFE0F"; // ☑️
-        public const string ERROR = "\u274C"; // ❌
-        public const string WARN = "\u26A0\uFE0F"; // ⚠️
+        public static readonly string SUCCESS = "\u2611\uFE0F"; // ☑️
+        public static readonly string ERROR = "\u274C"; // ❌
+        public static readonly string WARN = "\u26A0\uFE0F"; // ⚠️
 
-        public const string LOADING = "<a:loading:1110293618222178324>";
+        public static readonly string LOADING = "<a:loading:1110293618222178324>";
     }
 }

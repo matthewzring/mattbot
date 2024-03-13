@@ -26,7 +26,6 @@ namespace mattbot.automod
         {
             int.TryParse(_configuration["crowd_mute_threshold"], out int CROWD_MUTE_THRESHOLD);
             int.TryParse(_configuration["crowd_mute_duration"], out int CROWD_MUTE_DURATION);
-            string CROWD_MUTE_EMOJI = _configuration["crowd_mute_emoji"];
 
             if (!reaction.User.IsSpecified
                 || reaction.User.Value.IsBot
@@ -39,7 +38,7 @@ namespace mattbot.automod
 
             // CyberPatriot only
             IGuild guild = textChannel.Guild;
-            if (guild.Id is not CYBERPATRIOT_ID)
+            if (guild.Id != CYBERPATRIOT_ID)
                 return;
 
             // Look for a channel called modlog
@@ -54,7 +53,8 @@ namespace mattbot.automod
                 newMessage = message.Value;
 
             // Reaction emote
-            if (!Equals(reaction.Emote, Emote.Parse(CROWD_MUTE_EMOJI)))
+            Emote camera = Emote.Parse("<:1984:1025604468559061042>");
+            if (!Equals(reaction.Emote, camera))
                 return;
 
             // Ignore system messages
@@ -77,7 +77,7 @@ namespace mattbot.automod
             // Check if message is replying to someone
             StringBuilder builder = new StringBuilder();
             if (newMessage.Reference is not null)
-                builder.Append(newMessage.ReferencedMessage.Author.Mention).Append("\n");
+                builder.Append(newMessage.ReferencedMessage.Author.Mention).Append(" ");
 
             // Get the contents of the message
             string content;
@@ -129,7 +129,7 @@ namespace mattbot.automod
             await (newMessage.Author as IGuildUser).SetTimeOutAsync(interval, reason);
 
             DateTimeOffset now = DateTimeOffset.UtcNow;
-            await Logger.Log(now, tc, CROWD_MUTE_EMOJI, $"{FormatUtil.formatFullUser(newMessage.Author)} was crowd muted for {CROWD_MUTE_DURATION} minutes in {textChannel.Mention} by:\n\n{rlist}", eb.Build());
+            await Logger.Log(now, tc, WARN, $"{FormatUtil.formatFullUser(newMessage.Author)} was crowd muted for {CROWD_MUTE_DURATION} minutes in {textChannel.Mention} by:\n\n{rlist}", eb.Build());
 
             // Let everyone know the user has been timed out
             await newMessage.ReplyAsync($"This user has been crowd muted for {CROWD_MUTE_DURATION} minutes.");

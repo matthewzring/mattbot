@@ -18,12 +18,19 @@ namespace mattbot.modules.general
             {
                 colorRole = user.Roles.Where(x => x.Name.Equals(user.Username)).FirstOrDefault();
             }
-            else if (user.Roles.FirstOrDefault(x => x.Name == "Event Winner") != null)
+            else if (user.Roles.FirstOrDefault(x => x.Id == 1042648973950849065) != null) // Event Winner
             {
-                colorRole = user.Roles.Where(x => x.Name == "Event Winner").FirstOrDefault();
+                colorRole = user.Roles.Where(x => x.Id == 1042648973950849065).FirstOrDefault();
             }
             if (colorRole != null)
+            {
                 await SetRoleColor(colorRole.Id, hex);
+            }
+            else
+            {
+                // TODO: better logging and error handling
+                await RespondAsync(ERROR_MESSAGE, ephemeral: true);
+            }
         }
 
         private async Task SetRoleColor(ulong roleID, string hex)

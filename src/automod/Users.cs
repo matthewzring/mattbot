@@ -56,7 +56,7 @@ namespace mattbot.automod
                     {
                         if (row.Count > 0 && row[0].ToString() == arg.Id.ToString())
                         {
-                            IRole competitor23 = arg.Guild.Roles.FirstOrDefault(x => x.Name == "2023 Competitor");
+                            IRole competitor23 = arg.Guild.Roles.FirstOrDefault(x => x.Id == 1112957783848001666);
                             if (competitor23 == null)
                                 return;
                             await arg.AddRoleAsync(competitor23);
@@ -69,7 +69,7 @@ namespace mattbot.automod
             // Assign roles upon joining CyberPatriot Finalists
             if (arg.Guild.Id == FINALISTS_ID)
             {
-                IRole quarantined = arg.Guild.Roles.FirstOrDefault(x => x.Name == "Quarantined");
+                IRole quarantined = arg.Guild.Roles.FirstOrDefault(x => x.Id == 1070511023523639406);
                 if (quarantined == null)
                     return;
                 await arg.AddRoleAsync(quarantined);
@@ -109,7 +109,7 @@ namespace mattbot.automod
                 }
 
                 Found:
-                    IRole cpxvi = arg.Guild.Roles.FirstOrDefault(x => x.Name == "CyberPatriot XVI");
+                    IRole cpxvi = arg.Guild.Roles.FirstOrDefault(x => x.Id == 1201674110477013032);
                     if (cpxvi == null)
                         return;
                     await arg.AddRoleAsync(cpxvi);
@@ -135,7 +135,7 @@ namespace mattbot.automod
 
                             await after.AddRoleAsync(colorRole);
 
-                            int position = guildID == CYBERPATRIOT_ID ? 4 : 6;
+                            int position = guildID == CYBERPATRIOT_ID ? 4 : 0;
                             await colorRole.ModifyAsync(x => x.Position = role.Position + position);
                             break;
                         }
@@ -203,7 +203,7 @@ namespace mattbot.automod
             if (arg1.Id == CYBERPATRIOT_ID)
             {
                 SocketGuildUser user = arg2 as SocketGuildUser;
-                if (user.Roles.FirstOrDefault(x => x.Name == "MC Registered") != null)
+                if (user.Roles.FirstOrDefault(x => x.Id == 1094750546734370846) != null)
                 {
                     // Todo
                 }

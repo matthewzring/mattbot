@@ -5,14 +5,14 @@ namespace mattbot.logging
 {
     public class Logger
     {
-        private const string NAME = "\uD83D\uDCDB"; // 📛
-        private const string JOIN = "\uD83D\uDCE5"; // 📥
-        private const string NEW = "\uD83C\uDD95"; // 🆕
-        private const string LEAVE = "\uD83D\uDCE4"; // 📤
+        private static readonly string NAME = "\uD83D\uDCDB"; // 📛
+        private static readonly string JOIN = "\uD83D\uDCE5"; // 📥
+        private static readonly string NEW = "\uD83C\uDD95"; // 🆕
+        private static readonly string LEAVE = "\uD83D\uDCE4"; // 📤
 
-        private const string VOICE_JOIN = "<:voicejoin:1110632369414742046>";
-        private const string VOICE_LEAVE = "<:voiceleave:1110632368156463246>";
-        private const string VOICE_CHANGE = "<:voicechange:1110632371495129098>";
+        private static readonly string VOICE_JOIN = "<:voicejoin:1110632369414742046>";
+        private static readonly string VOICE_LEAVE = "<:voiceleave:1110632368156463246>";
+        private static readonly string VOICE_CHANGE = "<:voicechange:1110632371495129098>";
 
         public static async Task Log(DateTimeOffset now, ITextChannel tc, string emote, string message, Embed embed)
         {
@@ -112,7 +112,7 @@ namespace mattbot.logging
             EmbedBuilder eb = new EmbedBuilder().WithAuthor(author, message.Author.GetAvatarUrl()).WithColor(0xFF0000).WithDescription(content).WithTimestamp(message.Timestamp);
             if (imageurl is not null)
                 eb.WithImageUrl(imageurl);
-            ITextChannel tc = client.GetGuild(TESTING_ID)?.TextChannels.FirstOrDefault(x => x.Name == "botlog");
+            ITextChannel tc = client.GetGuild(MATTLOUNGE_ID)?.GetTextChannel(1094113944714608680);
             if (tc == null)
                 return;
             await tc.SendMessageAsync(embed: eb.Build());

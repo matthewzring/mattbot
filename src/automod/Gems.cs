@@ -26,7 +26,6 @@ namespace mattbot.automod
         {
             int.TryParse(_configuration["gem_threshold"], out int GEM_THRESHOLD);
             int.TryParse(_configuration["gem_duration"], out int GEM_DURATION);
-            string GEM_EMOJI = _configuration["gem_emoji"];
 
             if (!reaction.User.IsSpecified
                 || reaction.User.Value.IsBot
@@ -51,7 +50,8 @@ namespace mattbot.automod
                 newMessage = message.Value;
 
             // Reaction emoji
-            if (!Equals(reaction.Emote, new Emoji(GEM_EMOJI)))
+            Emoji gem = new("\uD83D\uDC8E"); // 💎
+            if (!Equals(reaction.Emote, gem))
                 return;
 
             // Ignore system messages
@@ -75,7 +75,7 @@ namespace mattbot.automod
             // Check if message is replying to someone
             StringBuilder builder = new StringBuilder();
             if (newMessage.Reference is not null)
-                builder.Append(newMessage.ReferencedMessage.Author.Mention).Append("\n");
+                builder.Append(newMessage.ReferencedMessage.Author.Mention).Append(" ");
 
             // Get the contents of the message
             string content;
@@ -151,7 +151,7 @@ namespace mattbot.automod
                     return;
 
             // Post the message
-            IUserMessage msg = await gemChannel.SendMessageAsync($"{GEM_EMOJI} {textChannel.Mention} `{message.Id}` {GEM_EMOJI}", embed: eb.Build()).ConfigureAwait(false);
+            IUserMessage msg = await gemChannel.SendMessageAsync($"{gem} {textChannel.Mention} `{message.Id}` {gem}", embed: eb.Build()).ConfigureAwait(false);
             await msg.AddReactionAsync(reaction.Emote);
         }
     }

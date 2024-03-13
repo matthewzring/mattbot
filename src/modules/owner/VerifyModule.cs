@@ -10,10 +10,10 @@ namespace mattbot.modules.owner
     {
         [SlashCommand("verify", "Verify a user")]
         public async Task VerifyAsync([Summary("id", "List of user IDs")] string userIDs,
-                                      [Choice("National Finalist", 0),
-                                       Choice("International Finalist", 1),
-                                       Choice("Finalist Coach/Mentor", 2)]
-                                      [Summary("verify-as", "The type of verification. Leave blank for National Finalist")] int verificationType = 0)
+                                      [Choice("National Finalist", "national-finalist"),
+                                       Choice("International Finalist", "international-finalist"),
+                                       Choice("Finalist Coach/Mentor", "coach-mentor")]
+                                      [Summary("verify-as", "The type of verification. Leave blank for National Finalist")] string verificationType = "national-finalist")
         {
             StringBuilder sb = new StringBuilder();
             await RespondAsync($"{LOADING} Verifying users...\n");
@@ -29,21 +29,22 @@ namespace mattbot.modules.owner
 
                 switch (verificationType)
                 {
-                    case 0:
+                    case "national-finalist":
                         SocketRole nationalFinalist = Context.Guild.GetRole(567746329057427456);
                         await user.AddRoleAsync(nationalFinalist);
                         break;
-                    case 1:
+                    case "international-finalist":
                         SocketRole internationalFinalist = Context.Guild.GetRole(939197252512149626);
                         await user.AddRoleAsync(internationalFinalist);
                         break;
-                    case 2:
+                    default:
                         break;
                 }
 
                 SocketGuild finalists = Context.Client.GetGuild(FINALISTS_ID);
                 if (finalists.GetUser(user.Id) != null)
                 {
+                    // TODO: add more verification options
                     SocketRole cpxvi = finalists.GetRole(1201674110477013032);
                     await finalists.GetUser(user.Id).AddRoleAsync(cpxvi);
                     sb.Append($"{SUCCESS} Verified {FormatUtil.formatFullUser(user)}\n");
