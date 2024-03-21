@@ -51,4 +51,19 @@ public class ThanksModule : ModuleBase<SocketCommandContext>
         };
         await ReplyAsync(responses[random.Next(responses.Length)]);
     }
+
+    [Command("tanks mattbot")]
+    [Alias("tank you mattbot", "tanks automatt", "tank you automatt")]
+    public async Task TanksAsync()
+    {
+        string[] responses =
+        {
+            "https://tenor.com/view/tank-m60t-turkish-tank-tsk-syria-gif-23298742",
+            "https://tenor.com/view/war-thunder-meme-spin-tank-gif-4023090852990224147",
+            "https://tenor.com/view/tank-you-thanks-thx-tank-gif-11214867188794065854",
+            "https://tenor.com/view/yes-gif-25832437",
+            "https://tenor.com/view/dog-tank-pup-puppy-cute-gif-16932615"
+        };
+        await ReplyAsync(responses[random.Next(responses.Length)]);
+    }
 }
