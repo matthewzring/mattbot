@@ -151,7 +151,7 @@ public class Users
 
                         await after.AddRoleAsync(colorRole);
 
-                        int position = guildID == CYBERPATRIOT_ID ? 4 : 0;
+                        int position = guildID == CYBERPATRIOT_ID ? 4 : 1;
                         await colorRole.ModifyAsync(x => x.Position = role.Position + position);
                         break;
                     }
