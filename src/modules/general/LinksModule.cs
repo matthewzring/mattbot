@@ -20,6 +20,7 @@ using Discord.WebSocket;
 namespace mattbot.modules.general;
 
 [CyberPatriot]
+[Finalists]
 public class LinksModule : InteractionModuleBase<SocketInteractionContext>
 {
     private static readonly string RULESBOOK = "https://www.uscyberpatriot.org/competition/rules-book";

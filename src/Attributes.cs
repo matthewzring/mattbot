@@ -19,11 +19,6 @@ namespace mattbot;
 public class Attributes
 {
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, AllowMultiple = false)]
-    public class CyberPatriotAttribute : Attribute
-    {
-    }
-
-    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, AllowMultiple = false)]
     public class CCDCAttribute : Attribute
     {
     }
@@ -34,7 +29,17 @@ public class Attributes
     }
 
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, AllowMultiple = false)]
+    public class CyberPatriotAttribute : Attribute
+    {
+    }
+
+    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, AllowMultiple = false)]
     public class DebugAttribute : Attribute
+    {
+    }
+
+    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, AllowMultiple = false)]
+    public class FinalistsAttribute : Attribute
     {
     }
 

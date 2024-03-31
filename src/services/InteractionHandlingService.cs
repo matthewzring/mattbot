@@ -51,18 +51,12 @@ public class InteractionHandlingService
 
     private async Task ReadyAsync()
     {
-        // await _client.GetGuild(CYBERPATRIOT_ID).DeleteApplicationCommandsAsync();
         // await _client.GetGuild(CCDC_ID).DeleteApplicationCommandsAsync();
         // await _client.GetGuild(CYBERDISCORD_ID).DeleteApplicationCommandsAsync();
+        // await _client.GetGuild(CYBERPATRIOT_ID).DeleteApplicationCommandsAsync();
         // await _client.GetGuild(MATTLOUNGE_ID).DeleteApplicationCommandsAsync();
+        // await _client.GetGuild(FINALISTS_ID).DeleteApplicationCommandsAsync();
         // await _client.Rest.DeleteAllGlobalCommandsAsync();
-
-        ModuleInfo[] cyberpatriotCommands = _commands.Modules
-            .Where(x => x.Attributes
-                .Any(y => y is CyberPatriotAttribute))
-            .ToArray();
-        RestGuild cyberpatriot = await _client.Rest.GetGuildAsync(CYBERPATRIOT_ID);
-        await _commands.AddModulesToGuildAsync(cyberpatriot, true, cyberpatriotCommands);
 
         ModuleInfo[] ccdcCommands = _commands.Modules
             .Where(x => x.Attributes
@@ -78,6 +72,13 @@ public class InteractionHandlingService
         RestGuild cyberdiscord = await _client.Rest.GetGuildAsync(CYBERDISCORD_ID);
         await _commands.AddModulesToGuildAsync(cyberdiscord, true, cyberdiscordCommands);
 
+        ModuleInfo[] cyberpatriotCommands = _commands.Modules
+            .Where(x => x.Attributes
+                .Any(y => y is CyberPatriotAttribute))
+            .ToArray();
+        RestGuild cyberpatriot = await _client.Rest.GetGuildAsync(CYBERPATRIOT_ID);
+        await _commands.AddModulesToGuildAsync(cyberpatriot, true, cyberpatriotCommands);
+
         ModuleInfo[] debugCommands = _commands.Modules
             .Where(x => x.Attributes
                 .Any(y => y is DebugAttribute))
@@ -85,16 +86,24 @@ public class InteractionHandlingService
         RestGuild mattlounge = await _client.Rest.GetGuildAsync(MATTLOUNGE_ID);
         await _commands.AddModulesToGuildAsync(mattlounge, true, debugCommands);
 
+        ModuleInfo[] finalistsCommands = _commands.Modules
+            .Where(x => x.Attributes
+                .Any(y => y is FinalistsAttribute))
+            .ToArray();
+        RestGuild finalists = await _client.Rest.GetGuildAsync(FINALISTS_ID);
+        await _commands.AddModulesToGuildAsync(finalists, true, finalistsCommands);
+
         ModuleInfo[] ignoredCommands = _commands.Modules
             .Where(x => x.Attributes
                 .Any(y => y is IgnoreAttribute))
             .ToArray();
 
         ModuleInfo[] globalCommands = _commands.Modules
-            .Where(x => !cyberpatriotCommands.Contains(x))
             .Where(x => !ccdcCommands.Contains(x))
             .Where(x => !cyberdiscordCommands.Contains(x))
+            .Where(x => !cyberpatriotCommands.Contains(x))
             .Where(x => !debugCommands.Contains(x))
+            .Where(x => !finalistsCommands.Contains(x))
             .Where(x => !ignoredCommands.Contains(x))
             .ToArray();
         await _commands.AddModulesGloballyAsync(true, globalCommands);
