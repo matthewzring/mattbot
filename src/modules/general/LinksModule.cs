@@ -33,7 +33,7 @@ public class LinksModule : InteractionModuleBase<SocketInteractionContext>
     public async Task HandleRulesBookCommand(IUser user)
     {
         SocketRole noContextCommands = Context.Guild.Roles.FirstOrDefault(role => role.Name == "No Context Commands");
-        if (Context.User is IGuildUser guildUser && guildUser.RoleIds.Contains(noContextCommands.Id))
+        if (noContextCommands is not null && Context.User is IGuildUser guildUser && guildUser.RoleIds.Contains(noContextCommands.Id))
         {
             await RespondAsync("You are prohibited from using this command!", ephemeral: true);
             return;
@@ -50,7 +50,7 @@ public class LinksModule : InteractionModuleBase<SocketInteractionContext>
     public async Task HandleCompetitionScheduleCommand(IUser user)
     {
         SocketRole noContextCommands = Context.Guild.Roles.FirstOrDefault(role => role.Name == "No Context Commands");
-        if (Context.User is IGuildUser guildUser && guildUser.RoleIds.Contains(noContextCommands.Id))
+        if (noContextCommands is not null && Context.User is IGuildUser guildUser && guildUser.RoleIds.Contains(noContextCommands.Id))
         {
             await RespondAsync("You are prohibited from using this command!", ephemeral: true);
             return;
@@ -67,7 +67,7 @@ public class LinksModule : InteractionModuleBase<SocketInteractionContext>
     public async Task HandleChallengesByRoundCommand(IUser user)
     {
         SocketRole noContextCommands = Context.Guild.Roles.FirstOrDefault(role => role.Name == "No Context Commands");
-        if (Context.User is IGuildUser guildUser && guildUser.RoleIds.Contains(noContextCommands.Id))
+        if (noContextCommands is not null && Context.User is IGuildUser guildUser && guildUser.RoleIds.Contains(noContextCommands.Id))
         {
             await RespondAsync("You are prohibited from using this command!", ephemeral: true);
             return;
@@ -84,7 +84,7 @@ public class LinksModule : InteractionModuleBase<SocketInteractionContext>
     public async Task HandleTiersAndAdvancementCommand(IUser user)
     {
         SocketRole noContextCommands = Context.Guild.Roles.FirstOrDefault(role => role.Name == "No Context Commands");
-        if (Context.User is IGuildUser guildUser && guildUser.RoleIds.Contains(noContextCommands.Id))
+        if (noContextCommands is not null && Context.User is IGuildUser guildUser && guildUser.RoleIds.Contains(noContextCommands.Id))
         {
             await RespondAsync("You are prohibited from using this command!", ephemeral: true);
             return;
@@ -101,7 +101,7 @@ public class LinksModule : InteractionModuleBase<SocketInteractionContext>
     public async Task HandleContactCommand(IUser user)
     {
         SocketRole noContextCommands = Context.Guild.Roles.FirstOrDefault(role => role.Name == "No Context Commands");
-        if (Context.User is IGuildUser guildUser && guildUser.RoleIds.Contains(noContextCommands.Id))
+        if (noContextCommands is not null && Context.User is IGuildUser guildUser && guildUser.RoleIds.Contains(noContextCommands.Id))
         {
             await RespondAsync("You are prohibited from using this command!", ephemeral: true);
             return;

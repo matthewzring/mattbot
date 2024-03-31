@@ -31,7 +31,7 @@ public class LMGTFYModule : InteractionModuleBase<SocketInteractionContext>
         string lmgtfyurl = url + query;
 
         SocketRole noContextCommands = Context.Guild.Roles.FirstOrDefault(role => role.Name == "No Context Commands");
-        if (Context.User is IGuildUser guildUser && guildUser.RoleIds.Contains(noContextCommands.Id))
+        if (noContextCommands is not null && Context.User is IGuildUser guildUser && guildUser.RoleIds.Contains(noContextCommands.Id))
         {
             await RespondAsync("You are prohibited from using this command!", ephemeral: true);
             return;

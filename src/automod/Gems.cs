@@ -116,7 +116,7 @@ public class Gems
         IRole noGems = guild.Roles.FirstOrDefault(role => role.Name == "No Gems");
 
         // Make sure the author does not have the "No Gems" role
-        if (newMessage.Author is IGuildUser user && user.RoleIds.Contains(noGems.Id))
+        if (noGems is not null && newMessage.Author is IGuildUser user && user.RoleIds.Contains(noGems.Id))
             return;
 
         // Count all valid reactions
