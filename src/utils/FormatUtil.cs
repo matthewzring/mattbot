@@ -82,7 +82,7 @@ public class FormatUtil
         string str = builder.ToString();
         if (str.EndsWith(", "))
             str = str.Substring(0, str.Length-2);
-        if (String.IsNullOrEmpty(str))
+        if (string.IsNullOrEmpty(str))
             str = "**No time**";
         return str;
     }

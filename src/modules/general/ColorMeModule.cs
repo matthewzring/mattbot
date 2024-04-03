@@ -20,8 +20,8 @@ using Color = Discord.Color;
 
 namespace mattbot.modules.general;
 
-[CyberPatriot]
 [CCDC]
+[CyberPatriot]
 public class ColorMeModule : InteractionModuleBase<SocketInteractionContext>
 {
     // colorme
