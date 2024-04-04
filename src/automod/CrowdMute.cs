@@ -15,7 +15,6 @@
  */
 
 using Discord.WebSocket;
-using mattbot.services;
 using mattbot.utils;
 
 namespace mattbot.automod;
