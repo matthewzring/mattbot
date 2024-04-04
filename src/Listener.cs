@@ -15,27 +15,32 @@
  */
 
 using Discord.WebSocket;
+using mattbot.automod;
 
-namespace mattbot.services;
+namespace mattbot;
 
 public class Listener
 {
     private readonly DiscordSocketClient _client;
 
+    // Delegates
     public delegate Task AsyncListener<in TEventArgs>(TEventArgs args);
 
     public delegate Task AsyncListener<in TEventArgs, in TArgs>(TEventArgs args, TArgs arsg2);
 
     public delegate Task AsyncListener<in TEventArgs, in TArgs, in TEvent>(TEventArgs args, TArgs args2, TEvent args3);
+
     public delegate Task AsyncListener<in TEventArgs, in TArgs, in TEvent, in TArgs2>(TEventArgs args, TArgs args2, TEvent args3, TArgs2 args4);
 
+    // Events
     public event AsyncListener<SocketMessage>? MessageReceived;
     public event AsyncListener<IGuildUser>? UserJoined;
     public event AsyncListener<IGuild, IUser>? UserLeft;
-    public event AsyncListener<SocketUser, SocketUser>? UserUpdated;
     public event AsyncListener<Cacheable<SocketGuildUser, ulong>, SocketGuildUser>? GuildMemberUpdated;
+    public event AsyncListener<SocketUser, SocketUser>? UserUpdated;
     public event AsyncListener<SocketUser, SocketVoiceState, SocketVoiceState>? UserVoiceStateUpdated;
     public event AsyncListener<Cacheable<IUserMessage, ulong>, Cacheable<IMessageChannel, ulong>, SocketReaction>? ReactionAdded;
+    public event AsyncListener<DiscordSocketClient>? Ready;
 
     public Listener(DiscordSocketClient client)
     {
@@ -43,10 +48,11 @@ public class Listener
         client.MessageReceived += ClientOnMessageReceived;
         client.UserJoined += ClientOnUserJoined;
         client.UserLeft += ClientOnUserLeft;
-        client.UserUpdated += ClientOnUserUpdated;
         client.GuildMemberUpdated += ClientOnGuildMemberUpdated;
+        client.UserUpdated += ClientOnUserUpdated;
         client.UserVoiceStateUpdated += ClientOnUserVoiceStateUpdated;
         client.ReactionAdded += ClientOnReactionAdded;
+        client.Ready += ClientOnReady;
     }
 
     private async Task ClientOnMessageReceived(SocketMessage arg)
@@ -61,6 +67,9 @@ public class Listener
                 // Log the message received
                 await Logger.LogMessageReceived(_client, arg);
             }
+
+            // Run automod on the message
+            await AutoMod.performAutomod(arg);
         }
     }
 
@@ -71,6 +80,9 @@ public class Listener
 
         // Log the join
         await Logger.LogGuildJoin(arg);
+
+        // Perform automod on the newly-joined member
+        await AutoMod.userJoin(arg);
     }
 
     private async Task ClientOnUserLeft(IGuild arg1, IUser arg2)
@@ -80,6 +92,28 @@ public class Listener
 
         // Log the member leaving
         await Logger.LogGuildLeave(arg1, arg2);
+
+        // Siginal the automod if they had a custom role
+        // or were whitelisted on the Minecraft server
+        await AutoMod.userLeft(arg1, arg2);
+    }
+
+    private async Task ClientOnGuildMemberUpdated(Cacheable<SocketGuildUser, ulong> arg1, SocketGuildUser arg2)
+    {
+        if (GuildMemberUpdated is not null)
+            _ = GuildMemberUpdated(arg1, arg2);
+
+        // Siginal the automod if someone boosted the server
+        IEnumerable<SocketRole> addedRoles = arg2.Roles.Except(arg1.Value.Roles);
+        if ((arg2.Guild.Id == CYBERPATRIOT_ID || arg2.Guild.Id == CCDC_ID) && addedRoles.Any(x => x.Name == "Nitro Booster"))
+        {
+        }
+
+        // Siginal the automod if someone stopped boosting the server
+        IEnumerable<SocketRole> removedRoles = arg1.Value.Roles.Except(arg2.Roles);
+        if ((arg2.Guild.Id == CYBERPATRIOT_ID || arg2.Guild.Id == CCDC_ID) && removedRoles.Any(x => x.Name == "Nitro Booster"))
+        {
+        }
     }
 
     private async Task ClientOnUserUpdated(SocketUser arg1, SocketUser arg2)
@@ -87,17 +121,14 @@ public class Listener
         if (UserUpdated is not null)
             _ = UserUpdated(arg1, arg2);
 
-        if (arg1.Username != arg2.Username || arg1.Discriminator != arg2.Discriminator)
+        // Make sure the name actually changed
+        if (!arg1.Username.Equals(arg2.Username) || !arg1.Discriminator.Equals(arg2.Discriminator))
         {
             // Log the name change
             await Logger.LogNameChange(arg1, arg2);
-        }
-    }
 
-    private async Task ClientOnGuildMemberUpdated(Cacheable<SocketGuildUser, ulong> arg1, SocketGuildUser arg2)
-    {
-        if (GuildMemberUpdated is not null)
-            _ = GuildMemberUpdated(arg1, arg2);
+            // Siginal the automod if they have a custom role
+        }
     }
 
     private async Task ClientOnUserVoiceStateUpdated(SocketUser arg1, SocketVoiceState arg2, SocketVoiceState arg3)
@@ -108,17 +139,20 @@ public class Listener
         if (arg2.VoiceChannel == null && arg3.VoiceChannel != null)
         {
             // Log the voice join
-            await Logger.LogVoiceJoin(arg1, arg2, arg3);
+            if (!arg1.IsBot) // ignore bots
+                await Logger.LogVoiceJoin(arg1, arg2, arg3);
         }
         else if (arg2.VoiceChannel != null && arg3.VoiceChannel != null && arg2.VoiceChannel != arg3.VoiceChannel)
         {
             // Log the voice move
-            await Logger.LogVoiceMove(arg1, arg2, arg3);
+            if (!arg1.IsBot) // ignore bots
+                await Logger.LogVoiceMove(arg1, arg2, arg3);
         }
         else if (arg2.VoiceChannel != null && arg3.VoiceChannel == null)
         {
             // Log the voice leave
-            await Logger.LogVoiceLeave(arg1, arg2, arg3);
+            if (!arg1.IsBot) // ignore bots
+                await Logger.LogVoiceLeave(arg1, arg2, arg3);
         }
     }
 
@@ -126,5 +160,30 @@ public class Listener
     {
         if (ReactionAdded is not null)
             _ = ReactionAdded(arg1, arg2, arg3);
+
+        // Siginal the automod if a message was gemmed
+        Emoji gem = new("\uD83D\uDC8E"); // 💎
+        if (arg3.Emote.Equals(gem))
+        {
+        }
+
+        // Siginal the automod if a message was reported
+        Emoji wastebasket = new("\uD83D\uDDD1\uFE0F"); // 🗑️
+        if (arg3.Emote.Equals(wastebasket))
+        {
+        }
+
+        // Siginal the automod if a user was crowdmuted
+        Emote camera = Emote.Parse("<:1984:1025604468559061042>");
+        if (arg3.Emote.Equals(camera))
+        {
+        }
+    }
+
+    private Task ClientOnReady()
+    {
+        if (Ready is not null)
+            _ = Ready(_client);
+        return Task.CompletedTask;
     }
 }
