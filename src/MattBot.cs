@@ -26,6 +26,9 @@ public class MattBot
 {
     public DiscordSocketClient _client { get; }
 
+    public Logger Logger { get; }
+    public AutoMod AutoMod { get; }
+
     private readonly IConfiguration _configuration;
     private readonly IServiceProvider _services;
 
@@ -51,12 +54,16 @@ public class MattBot
             .AddSingleton(x => new InteractionService(x.GetRequiredService<DiscordSocketClient>()))
             .AddSingleton<InteractionService>()
             .AddSingleton<InteractionHandlingService>()
-            .AddSingleton(new Listener(_client))
+            .AddSingleton(new Listener(this, _client))
+            .AddSingleton(new Logger(this))
             .AddSingleton<CrowdMute>()
             .AddSingleton<Gems>()
             .AddSingleton<MessageReports>()
-            .AddSingleton<Users>()
             .BuildServiceProvider();
+
+        // todo
+        Logger = new Logger(this);
+        AutoMod = new AutoMod(this);
     }
 
     static void Main(string[] args)
@@ -73,7 +80,6 @@ public class MattBot
         await _services.GetRequiredService<CrowdMute>().InitializeAsync();
         await _services.GetRequiredService<Gems>().InitializeAsync();
         await _services.GetRequiredService<MessageReports>().InitializeAsync();
-        await _services.GetRequiredService<Users>().InitializeAsync();
 
         Enum.TryParse(_configuration["activity"], out ActivityType activityType);
         await client.SetGameAsync(_configuration["status"], type: activityType);

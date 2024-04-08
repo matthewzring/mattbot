@@ -21,8 +21,6 @@ namespace mattbot;
 
 public class Listener
 {
-    private readonly DiscordSocketClient _client;
-
     // Delegates
     public delegate Task AsyncListener<in TEventArgs>(TEventArgs args);
 
@@ -42,8 +40,12 @@ public class Listener
     public event AsyncListener<Cacheable<IUserMessage, ulong>, Cacheable<IMessageChannel, ulong>, SocketReaction>? ReactionAdded;
     public event AsyncListener<DiscordSocketClient>? Ready;
 
-    public Listener(DiscordSocketClient client)
+    private readonly DiscordSocketClient _client;
+    private readonly MattBot mattbot;
+
+    public Listener(MattBot mattbot, DiscordSocketClient client)
     {
+        this.mattbot = mattbot;
         _client = client;
         client.MessageReceived += ClientOnMessageReceived;
         client.UserJoined += ClientOnUserJoined;
@@ -55,129 +57,142 @@ public class Listener
         client.Ready += ClientOnReady;
     }
 
-    private async Task ClientOnMessageReceived(SocketMessage arg)
+    private Task ClientOnMessageReceived(SocketMessage arg)
     {
-        if (MessageReceived is not null)
-            _ = MessageReceived(arg);
-
         if (!arg.Author.IsBot) // ignore bot messages
         {
             if (arg.Channel is IPrivateChannel)
             {
                 // Log the message received
-                await Logger.LogMessageReceived(_client, arg);
+                _ = mattbot.Logger.LogMessageReceived(_client, arg);
             }
 
             // Run automod on the message
-            await AutoMod.performAutomod(arg);
+            _ = mattbot.AutoMod.PerformAutomod(arg);
         }
+
+        return Task.CompletedTask;
     }
 
-    private async Task ClientOnUserJoined(IGuildUser arg)
+    private Task ClientOnUserJoined(IGuildUser arg)
     {
-        if (UserJoined is not null)
-            _ = UserJoined(arg);
-
         // Log the join
-        await Logger.LogGuildJoin(arg);
+        _ = mattbot.Logger.LogGuildJoin(arg);
 
         // Perform automod on the newly-joined member
-        await AutoMod.userJoin(arg);
+        _ = mattbot.AutoMod.UserJoin(arg);
+
+        return Task.CompletedTask;
     }
 
-    private async Task ClientOnUserLeft(IGuild arg1, IUser arg2)
+    private Task ClientOnUserLeft(IGuild arg1, IUser arg2)
     {
-        if (UserLeft is not null)
-            _ = UserLeft(arg1, arg2);
-
         // Log the member leaving
-        await Logger.LogGuildLeave(arg1, arg2);
+        _ = mattbot.Logger.LogGuildLeave(arg1, arg2);
 
-        // Siginal the automod if they had a custom role
-        // or were whitelisted on the Minecraft server
-        await AutoMod.userLeft(arg1, arg2);
-    }
-
-    private async Task ClientOnGuildMemberUpdated(Cacheable<SocketGuildUser, ulong> arg1, SocketGuildUser arg2)
-    {
-        if (GuildMemberUpdated is not null)
-            _ = GuildMemberUpdated(arg1, arg2);
-
-        // Siginal the automod if someone boosted the server
-        IEnumerable<SocketRole> addedRoles = arg2.Roles.Except(arg1.Value.Roles);
-        if ((arg2.Guild.Id == CYBERPATRIOT_ID || arg2.Guild.Id == CCDC_ID) && addedRoles.Any(x => x.Name == "Nitro Booster"))
+        // Siginal the automod if a Nitro Booster left
+        SocketRole bRole = (arg2 as SocketGuildUser).Roles.FirstOrDefault(x => x.Name.Equals("Nitro Booster"));
+        if ((arg1.Id == CCDC_ID || arg1.Id == CYBERPATRIOT_ID) && bRole != null)
         {
+            _ = mattbot.AutoMod.DeleteColorRole(arg2 as SocketGuildUser);
         }
 
-        // Siginal the automod if someone stopped boosting the server
-        IEnumerable<SocketRole> removedRoles = arg1.Value.Roles.Except(arg2.Roles);
-        if ((arg2.Guild.Id == CYBERPATRIOT_ID || arg2.Guild.Id == CCDC_ID) && removedRoles.Any(x => x.Name == "Nitro Booster"))
-        {
-        }
+        return Task.CompletedTask;
     }
 
-    private async Task ClientOnUserUpdated(SocketUser arg1, SocketUser arg2)
+    private Task ClientOnGuildMemberUpdated(Cacheable<SocketGuildUser, ulong> arg1, SocketGuildUser arg2)
     {
-        if (UserUpdated is not null)
-            _ = UserUpdated(arg1, arg2);
+        if (arg2.Guild.Id == CCDC_ID || arg2.Guild.Id == CYBERPATRIOT_ID)
+        {
+            // Siginal the automod if someone boosted the server
+            IEnumerable<SocketRole> addedRoles = arg2.Roles.Except(arg1.Value.Roles);
+            if (addedRoles.Any(x => x.Name.Equals("Nitro Booster")))
+            {
+                _ = mattbot.AutoMod.CreateColorRole(arg2);
+            }
 
+            // Siginal the automod if someone stopped boosting the server
+            IEnumerable<SocketRole> removedRoles = arg1.Value.Roles.Except(arg2.Roles);
+            if (removedRoles.Any(x => x.Name.Equals("Nitro Booster")))
+            {
+                _ = mattbot.AutoMod.DeleteColorRole(arg2);
+            }
+        }
+
+        return Task.CompletedTask;
+    }
+
+    private Task ClientOnUserUpdated(SocketUser arg1, SocketUser arg2)
+    {
         // Make sure the name actually changed
         if (!arg1.Username.Equals(arg2.Username) || !arg1.Discriminator.Equals(arg2.Discriminator))
         {
             // Log the name change
-            await Logger.LogNameChange(arg1, arg2);
+            _ = mattbot.Logger.LogNameChange(arg1, arg2);
 
-            // Siginal the automod if they have a custom role
+            // Siginal the automod because someone changed their username
+            foreach (SocketGuild guild in arg2.MutualGuilds)
+            {
+                SocketGuildUser user = guild.GetUser(arg2.Id);
+                SocketRole bRole = user.Roles.FirstOrDefault(x => x.Equals("Nitro Booster"));
+                if ((guild.Id == CCDC_ID || guild.Id == CYBERPATRIOT_ID) && (bRole != null || user.GuildPermissions.Has(GuildPermission.BanMembers)))
+                {
+                    _ = mattbot.AutoMod.UpdateColorRole(arg1, user);
+                }
+            }
         }
+
+        return Task.CompletedTask;
     }
 
-    private async Task ClientOnUserVoiceStateUpdated(SocketUser arg1, SocketVoiceState arg2, SocketVoiceState arg3)
+    private Task ClientOnUserVoiceStateUpdated(SocketUser arg1, SocketVoiceState arg2, SocketVoiceState arg3)
     {
-        if (UserVoiceStateUpdated is not null)
-            _ = UserVoiceStateUpdated(arg1, arg2, arg3);
-
         if (arg2.VoiceChannel == null && arg3.VoiceChannel != null)
         {
             // Log the voice join
             if (!arg1.IsBot) // ignore bots
-                await Logger.LogVoiceJoin(arg1, arg2, arg3);
+                _ = mattbot.Logger.LogVoiceJoin(arg1, arg2, arg3);
         }
         else if (arg2.VoiceChannel != null && arg3.VoiceChannel != null && arg2.VoiceChannel != arg3.VoiceChannel)
         {
             // Log the voice move
             if (!arg1.IsBot) // ignore bots
-                await Logger.LogVoiceMove(arg1, arg2, arg3);
+                _ = mattbot.Logger.LogVoiceMove(arg1, arg2, arg3);
         }
         else if (arg2.VoiceChannel != null && arg3.VoiceChannel == null)
         {
             // Log the voice leave
             if (!arg1.IsBot) // ignore bots
-                await Logger.LogVoiceLeave(arg1, arg2, arg3);
+                _ = mattbot.Logger.LogVoiceLeave(arg1, arg2, arg3);
         }
+
+        return Task.CompletedTask;
     }
 
-    private async Task ClientOnReactionAdded(Cacheable<IUserMessage, ulong> arg1, Cacheable<IMessageChannel, ulong> arg2, SocketReaction arg3)
+    private Task ClientOnReactionAdded(Cacheable<IUserMessage, ulong> arg1, Cacheable<IMessageChannel, ulong> arg2, SocketReaction arg3)
     {
-        if (ReactionAdded is not null)
-            _ = ReactionAdded(arg1, arg2, arg3);
-
-        // Siginal the automod if a message was gemmed
+        // Siginal the automod because a gem reaction was added
         Emoji gem = new("\uD83D\uDC8E"); // 💎
         if (arg3.Emote.Equals(gem))
         {
+            _ = mattbot.AutoMod.GemMessage(arg1, arg2, arg3);
         }
 
-        // Siginal the automod if a message was reported
+        // Siginal the automod because a wastebasket reaction was added
         Emoji wastebasket = new("\uD83D\uDDD1\uFE0F"); // 🗑️
         if (arg3.Emote.Equals(wastebasket))
         {
+            _ = mattbot.AutoMod.DeleteMessage(arg1, arg2, arg3);
         }
 
-        // Siginal the automod if a user was crowdmuted
+        // Siginal the automod because a 1984 reaction was added
         Emote camera = Emote.Parse("<:1984:1025604468559061042>");
         if (arg3.Emote.Equals(camera))
         {
+            _ = mattbot.AutoMod.CrowdmuteUser(arg1, arg2, arg3);
         }
+
+        return Task.CompletedTask;
     }
 
     private Task ClientOnReady()
