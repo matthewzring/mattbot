@@ -59,6 +59,11 @@ public class Gems
         if (gemChannel == null)
             return;
 
+        // Look for a channel called modlog
+        ITextChannel modlogChannel = (await guild.GetTextChannelsAsync())?.FirstOrDefault(x => x.Name == "modlog");
+        if (modlogChannel == null)
+            return;
+
         IUserMessage newMessage;
         if (!message.HasValue)
             newMessage = await message.GetOrDownloadAsync().ConfigureAwait(false);
@@ -122,6 +127,7 @@ public class Gems
         // Count all valid reactions
         // A reaction is considered "valid" if the user who reacted is not a bot, the message author, or prohibited from reacting
         int count = 0;
+        StringBuilder rlist = new StringBuilder();
         IAsyncEnumerable<IReadOnlyCollection<IUser>> users = newMessage.GetReactionUsersAsync(reaction.Emote, int.MaxValue);
         await foreach (IReadOnlyCollection<IUser> chunk in users)
         {
@@ -129,7 +135,10 @@ public class Gems
             {
                 IGuildUser guilduser = await guild.GetUserAsync(reactuser.Id);
                 if ((noGems is null || !guilduser.RoleIds.Contains(noGems.Id)) && !reactuser.IsBot && reactuser.Id != newMessage.Author.Id)
+                {
                     count++;
+                    rlist.Append(reactuser.Username).Append(", "); // Logging contributors
+                }
             }
         }
         if (count < GEM_THRESHOLD)
@@ -152,6 +161,10 @@ public class Gems
         if (newMessage.Author.Discriminator != "0000")
             author.Append("#").Append(newMessage.Author.Discriminator);
 
+        // Remove trailing comma
+        if (rlist.Length > 2)
+            rlist.Length -= 2;
+
         EmbedBuilder eb = new EmbedBuilder().WithAuthor(author.ToString(), newMessage.Author.GetAvatarUrl())
                                 .WithColor(userHighestRoleColor)
                                 .WithDescription(content + $"\n\n[Jump Link]({newMessage.GetJumpUrl()})")
@@ -169,5 +182,13 @@ public class Gems
         // Post the message
         IUserMessage msg = await gemChannel.SendMessageAsync($"{gem} {textChannel.Mention} `{message.Id}` {gem}", embed: eb.Build()).ConfigureAwait(false);
         await msg.AddReactionAsync(reaction.Emote);
+
+        // Log contributors
+        await modlogChannel.SendMessageAsync(
+            $"Gem Reaction\n" +
+            $"Message by {FormatUtil.formatFullUser(newMessage.Author)} in {textChannel.Mention}\n" +
+            $"[Jump to Message]({newMessage.GetJumpUrl()})\n" +
+            $"Contributors: {rlist}"
+        );
     }
 }
