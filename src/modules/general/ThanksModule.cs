@@ -24,7 +24,7 @@ public class ThanksModule : ModuleBase<SocketCommandContext>
     private static readonly Random random = new Random();
 
     [Command("thanks mattbot")]
-    [Alias("thank you mattbot", "thanks automatt", "thank you automatt")]
+    [Alias("thank you mattbot", "thanks automatt", "thank you automatt", "love you mattbot", "i love you mattbot")]
     public async Task ThanksAsync()
     {
         string[] responses =
