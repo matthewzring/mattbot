@@ -20,8 +20,8 @@ using mattbot.utils;
 
 namespace mattbot.modules.owner;
 
-[EnabledInDm(false)]
 [Group("admin", "admin commands")]
+[CommandContextType(InteractionContextType.Guild)]
 [DefaultMemberPermissions(GuildPermission.Administrator)]
 public class AdminModule : InteractionModuleBase<SocketInteractionContext>
 {

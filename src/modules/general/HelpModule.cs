@@ -18,10 +18,10 @@ using Discord.Interactions;
 
 namespace mattbot.modules.general;
 
+[CommandContextType(InteractionContextType.Guild)]
 public class HelpModule : InteractionModuleBase<SocketInteractionContext>
 {
     // help
-    [EnabledInDm(false)]
     [SlashCommand("help", "Sends help")]
     public async Task HelpAsync()
     {
