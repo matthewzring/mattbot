@@ -24,15 +24,23 @@ namespace mattbot.logging;
  */
 public class Logger
 {
-    private static readonly string NAME = "\uD83D\uDCDB"; // 📛
-    private static readonly string JOIN = "\uD83D\uDCE5"; // 📥
-    private static readonly string NEW = "\uD83C\uDD95"; // 🆕
-    private static readonly string LEAVE = "\uD83D\uDCE4"; // 📤
+    private readonly string NAME = "\uD83D\uDCDB"; // 📛
+    private readonly string JOIN = "\uD83D\uDCE5"; // 📥
+    private readonly string NEW = "\uD83C\uDD95"; // 🆕
+    private readonly string LEAVE = "\uD83D\uDCE4"; // 📤
 
-    private static readonly string VOICE_JOIN = "<:voicejoin:1110632369414742046>";
-    private static readonly string VOICE_LEAVE = "<:voiceleave:1110632368156463246>";
-    private static readonly string VOICE_CHANGE = "<:voicechange:1110632371495129098>";
+    private readonly string VOICE_JOIN = "<:voicejoin:1110632369414742046>";
+    private readonly string VOICE_LEAVE = "<:voiceleave:1110632368156463246>";
+    private readonly string VOICE_CHANGE = "<:voicechange:1110632371495129098>";
 
+    private readonly MattBot mattbot;
+
+    public Logger (MattBot mattbot)
+    {
+        this.mattbot = mattbot;
+    }
+
+    // todo
     public static async Task Log(DateTimeOffset now, ITextChannel tc, string emote, string message, Embed embed)
     {
         try
@@ -42,7 +50,7 @@ public class Logger
         catch (Exception) { }
     }
 
-    public static async Task LogNameChange(SocketUser arg1, SocketUser arg2)
+    public async Task LogNameChange(SocketUser arg1, SocketUser arg2)
     {
         DateTimeOffset now = DateTimeOffset.UtcNow;
         foreach (SocketGuild guild in arg2.MutualGuilds)
@@ -55,9 +63,9 @@ public class Logger
         }
     }
 
-    public static async Task LogGuildJoin(IGuildUser arg)
+    public async Task LogGuildJoin(IGuildUser arg)
     {
-        ITextChannel tc = (await arg.Guild.GetTextChannelsAsync()).FirstOrDefault(x => x.Name == "serverlog");
+        ITextChannel tc = arg.Guild.GetTextChannelsAsync().Result.FirstOrDefault(x => x.Name == "serverlog");
         if (tc == null)
             return;
         DateTimeOffset now = DateTimeOffset.UtcNow;
@@ -67,9 +75,9 @@ public class Logger
                 +$"\nCreation: {arg.CreatedAt:R} ({FormatUtil.secondsToTimeCompact(seconds)} ago)", null);
     }
 
-    public static async Task LogGuildLeave(IGuild arg1, IUser arg2)
+    public async Task LogGuildLeave(IGuild arg1, IUser arg2)
     {
-        ITextChannel tc = (await arg1.GetTextChannelsAsync()).FirstOrDefault(x => x.Name == "serverlog");
+        ITextChannel tc = arg1.GetTextChannelsAsync().Result.FirstOrDefault(x => x.Name == "serverlog");
         if (tc == null)
             return;
         DateTimeOffset now = DateTimeOffset.UtcNow;
@@ -93,7 +101,7 @@ public class Logger
         await Log(now, tc, LEAVE, msg, null);
     }
 
-    public static async Task LogVoiceJoin(SocketUser arg1, SocketVoiceState arg2, SocketVoiceState arg3)
+    public async Task LogVoiceJoin(SocketUser arg1, SocketVoiceState arg2, SocketVoiceState arg3)
     {
         ITextChannel tc = arg3.VoiceChannel.Guild.Channels.FirstOrDefault(x => x.Name == "serverlog") as ITextChannel;
         if (tc == null)
@@ -101,7 +109,7 @@ public class Logger
         await Log(DateTimeOffset.UtcNow, tc, VOICE_JOIN, $"{FormatUtil.formatFullUser(arg1)} has joined voice channel _{arg3.VoiceChannel.Name}_", null);
     }
 
-    public static async Task LogVoiceMove(SocketUser arg1, SocketVoiceState arg2, SocketVoiceState arg3)
+    public async Task LogVoiceMove(SocketUser arg1, SocketVoiceState arg2, SocketVoiceState arg3)
     {
         ITextChannel tc = arg3.VoiceChannel.Guild.Channels.FirstOrDefault(x => x.Name == "serverlog") as ITextChannel;
         if (tc == null)
@@ -109,7 +117,7 @@ public class Logger
         await Log(DateTimeOffset.UtcNow, tc, VOICE_CHANGE, $"{FormatUtil.formatFullUser(arg1)} has moved voice channels from _{arg2.VoiceChannel.Name}_ to _{arg3.VoiceChannel.Name}_", null);
     }
 
-    public static async Task LogVoiceLeave(SocketUser arg1, SocketVoiceState arg2, SocketVoiceState arg3)
+    public async Task LogVoiceLeave(SocketUser arg1, SocketVoiceState arg2, SocketVoiceState arg3)
     {
         ITextChannel tc = arg2.VoiceChannel.Guild.Channels.FirstOrDefault(x => x.Name == "serverlog") as ITextChannel;
         if (tc == null)
@@ -117,7 +125,7 @@ public class Logger
         await Log(DateTimeOffset.UtcNow, tc, VOICE_LEAVE, $"{FormatUtil.formatFullUser(arg1)} has left voice channel _{arg2.VoiceChannel.Name}_", null);
     }
 
-    public static async Task LogMessageReceived(DiscordSocketClient client, SocketMessage message)
+    public async Task LogMessageReceived(DiscordSocketClient client, SocketMessage message)
     {
         string content = message.Content;
         string imageurl = message.Attachments?.FirstOrDefault()?.ProxyUrl;
