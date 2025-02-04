@@ -53,7 +53,7 @@ public class AutoMod
             ApplicationName = "MattBot"
         });
 
-        if (user.Guild.Id == CYBERDISCORD_ID)
+        if (user.Guild.Id == ECITADEL_ID)
         {
             IList<IList<object>> values = service.Spreadsheets.Values.Get("18LFfUXsLTsXmljfkOb4qf33ptiNs_aPju09A87l-rTc", "Competitors!A1:A500").Execute().Values;
             if (values is null || values.Count == 0)

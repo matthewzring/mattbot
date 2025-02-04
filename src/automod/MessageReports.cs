@@ -53,8 +53,8 @@ public class MessageReports
 
         IGuild guild = textChannel.Guild;
 
-        // Look for a channel called modlog
-        ITextChannel tc = (await guild.GetTextChannelsAsync()).FirstOrDefault(x => x.Name == "modlog");
+        // Look for a channel called bot_log
+        ITextChannel tc = (await guild.GetTextChannelsAsync()).FirstOrDefault(x => x.Name == "bot_log");
         if (tc == null)
             return;
 

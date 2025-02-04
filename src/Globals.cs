@@ -40,15 +40,15 @@ public class Globals
 
     // Servers
     public static readonly ulong CCDC_ID = 1093372273295101992;
-    public static readonly ulong CYBERDISCORD_ID = 1105972904711176262;
     public static readonly ulong CYBERPATRIOT_ID = 301768361136750592;
+    public static readonly ulong ECITADEL_ID = 1105972904711176262;
     public static readonly ulong FINALISTS_ID = 546405227092508683;
     public static readonly ulong MATTLOUNGE_ID = 372483060769357824;
 
     // Emoji
-    public static readonly string SUCCESS = "\u2611\uFE0F"; // ☑️
+    public static readonly string SUCCESS = "<a:mSuccess:1238370165054504970>";
     public static readonly string ERROR = "\u274C"; // ❌
-    public static readonly string WARN = "\u26A0\uFE0F"; // ⚠️
+    public static readonly string WARN = "⚠";
 
     public static readonly string LOADING = "<a:typing:1110293618222178324>";
 }

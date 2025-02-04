@@ -56,8 +56,8 @@ public class CrowdMute
         if (guild.Id != CYBERPATRIOT_ID)
             return;
 
-        // Look for a channel called modlog
-        ITextChannel tc = (await guild.GetTextChannelsAsync()).FirstOrDefault(x => x.Name == "modlog");
+        // Look for a channel called bot_log
+        ITextChannel tc = (await guild.GetTextChannelsAsync()).FirstOrDefault(x => x.Name == "bot_log");
         if (tc == null)
             return;
 
@@ -140,7 +140,7 @@ public class CrowdMute
 
         // Timeout the user
         TimeSpan interval = new TimeSpan(0, CROWD_MUTE_DURATION, 0);
-        RequestOptions reason = new RequestOptions { AuditLogReason = $"Crowd muted" };
+        RequestOptions reason = new() { AuditLogReason = $"Crowd muted" };
         await (newMessage.Author as IGuildUser).SetTimeOutAsync(interval, reason);
 
         DateTimeOffset now = DateTimeOffset.UtcNow;

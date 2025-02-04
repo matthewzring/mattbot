@@ -52,8 +52,8 @@ public class InteractionHandlingService
     private async Task ReadyAsync()
     {
         // await _client.GetGuild(CCDC_ID).DeleteApplicationCommandsAsync();
-        // await _client.GetGuild(CYBERDISCORD_ID).DeleteApplicationCommandsAsync();
         // await _client.GetGuild(CYBERPATRIOT_ID).DeleteApplicationCommandsAsync();
+        // await _client.GetGuild(ECITADEL_ID).DeleteApplicationCommandsAsync();
         // await _client.GetGuild(MATTLOUNGE_ID).DeleteApplicationCommandsAsync();
         // await _client.GetGuild(FINALISTS_ID).DeleteApplicationCommandsAsync();
         // await _client.Rest.DeleteAllGlobalCommandsAsync();
@@ -64,13 +64,6 @@ public class InteractionHandlingService
             .ToArray();
         RestGuild ccdc = await _client.Rest.GetGuildAsync(CCDC_ID);
         await _commands.AddModulesToGuildAsync(ccdc, true, ccdcCommands);
-
-        ModuleInfo[] cyberdiscordCommands = _commands.Modules
-            .Where(x => x.Attributes
-                .Any(y => y is CyberDiscordAttribute))
-            .ToArray();
-        RestGuild cyberdiscord = await _client.Rest.GetGuildAsync(CYBERDISCORD_ID);
-        await _commands.AddModulesToGuildAsync(cyberdiscord, true, cyberdiscordCommands);
 
         ModuleInfo[] cyberpatriotCommands = _commands.Modules
             .Where(x => x.Attributes
@@ -86,6 +79,13 @@ public class InteractionHandlingService
         RestGuild mattlounge = await _client.Rest.GetGuildAsync(MATTLOUNGE_ID);
         await _commands.AddModulesToGuildAsync(mattlounge, true, debugCommands);
 
+        ModuleInfo[] eCitadelCommands = _commands.Modules
+            .Where(x => x.Attributes
+                .Any(y => y is eCitadelAttribute))
+            .ToArray();
+        RestGuild eCitadel = await _client.Rest.GetGuildAsync(ECITADEL_ID);
+        await _commands.AddModulesToGuildAsync(eCitadel, true, eCitadelCommands);
+
         ModuleInfo[] finalistsCommands = _commands.Modules
             .Where(x => x.Attributes
                 .Any(y => y is FinalistsAttribute))
@@ -100,9 +100,9 @@ public class InteractionHandlingService
 
         ModuleInfo[] globalCommands = _commands.Modules
             .Where(x => !ccdcCommands.Contains(x))
-            .Where(x => !cyberdiscordCommands.Contains(x))
             .Where(x => !cyberpatriotCommands.Contains(x))
             .Where(x => !debugCommands.Contains(x))
+            .Where(x => !eCitadelCommands.Contains(x))
             .Where(x => !finalistsCommands.Contains(x))
             .Where(x => !ignoredCommands.Contains(x))
             .ToArray();

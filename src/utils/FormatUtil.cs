@@ -32,14 +32,14 @@ public class FormatUtil
 
     public static string formatUser (IUser user)
     {
-        if (user.Discriminator == "0000")
+        if (user.Discriminator is null or "0000")
             return filterEveryone($"**{user.Username}**");
         return filterEveryone($"**{user.Username}**#{user.Discriminator}");
     }
 
     public static string formatFullUser(IUser user)
     {
-        if (user.Discriminator == "0000")
+        if (user.Discriminator is null or "0000")
             return filterEveryone($"**{user.Username}** (ID:{user.Id})");
         return filterEveryone($"**{user.Username}**#{user.Discriminator} (ID:{user.Id})");
     }

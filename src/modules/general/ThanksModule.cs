@@ -21,7 +21,7 @@ namespace mattbot.modules.general;
 [RequireContext(ContextType.Guild)]
 public class ThanksModule : ModuleBase<SocketCommandContext>
 {
-    private static readonly Random random = new Random();
+    private static readonly Random random = new();
 
     [Command("thanks mattbot")]
     [Alias("thank you mattbot", "thanks automatt", "thank you automatt")]
