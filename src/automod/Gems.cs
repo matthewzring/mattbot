@@ -16,6 +16,7 @@
 
 using Discord.WebSocket;
 using Color = Discord.Color;
+using mattbot.utils;
 
 namespace mattbot.automod;
 
