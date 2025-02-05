@@ -59,9 +59,9 @@ public class Gems
         if (gemChannel == null)
             return;
 
-        // Look for a channel called modlog
-        ITextChannel modlogChannel = (await guild.GetTextChannelsAsync())?.FirstOrDefault(x => x.Name == "modlog");
-        if (modlogChannel == null)
+        // Look for a channel called bot_log
+        ITextChannel tc = (await guild.GetTextChannelsAsync())?.FirstOrDefault(x => x.Name == "bot_log");
+        if (tc == null)
             return;
 
         IUserMessage newMessage;
@@ -137,7 +137,7 @@ public class Gems
                 if ((noGems is null || !guilduser.RoleIds.Contains(noGems.Id)) && !reactuser.IsBot && reactuser.Id != newMessage.Author.Id)
                 {
                     count++;
-                    rlist.Append(reactuser.Username).Append(", "); // Logging contributors
+                    rlist.Append(FormatUtil.formatFullUser(reactuser)).Append(", "); // Logging contributors
                 }
             }
         }
@@ -184,11 +184,7 @@ public class Gems
         await msg.AddReactionAsync(reaction.Emote);
 
         // Log contributors
-        await modlogChannel.SendMessageAsync(
-            $"Gem Reaction\n" +
-            $"Message by {FormatUtil.formatFullUser(newMessage.Author)} in {textChannel.Mention}\n" +
-            $"[Jump to Message]({newMessage.GetJumpUrl()})\n" +
-            $"Contributors: {rlist}"
-        );
+        DateTimeOffset now = DateTimeOffset.UtcNow;
+        await Logger.Log(now, tc, WARN, $"A message in {textChannel.Mention} was gemmed by:\n\n{rlist}\n\n[Jump Link]({newMessage.GetJumpUrl()})", null);
     }
 }
