@@ -60,8 +60,8 @@ public class Gems
             return;
 
         // Look for a channel called bot_log
-        ITextChannel tc = (await guild.GetTextChannelsAsync())?.FirstOrDefault(x => x.Name == "bot_log");
-        if (tc == null)
+        ITextChannel botLogChannel = (await guild.GetTextChannelsAsync())?.FirstOrDefault(x => x.Name == "bot_log");
+        if (botLogChannel == null)
             return;
 
         IUserMessage newMessage;
@@ -185,6 +185,6 @@ public class Gems
 
         // Log contributors
         DateTimeOffset now = DateTimeOffset.UtcNow;
-        await Logger.Log(now, tc, WARN, $"A message in {textChannel.Mention} was gemmed by:\n\n{rlist}\n\n[Jump Link]({newMessage.GetJumpUrl()})", null);
+        await Logger.Log(now, botLogChannel, WARN, $"A message in {textChannel.Mention} was gemmed by:\n\n{rlist}\n\n[Jump Link]({newMessage.GetJumpUrl()})", null);
     }
 }
