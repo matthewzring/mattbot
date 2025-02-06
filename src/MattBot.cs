@@ -16,6 +16,7 @@
 
 using Discord.Commands;
 using Discord.Interactions;
+using Discord.Rest;
 using Discord.WebSocket;
 using mattbot.automod;
 using mattbot.services;
@@ -53,6 +54,7 @@ public class MattBot
             .AddSingleton<CommandHandlingService>()
             .AddSingleton(x => new InteractionService(x.GetRequiredService<DiscordSocketClient>()))
             .AddSingleton<InteractionService>()
+            .AddSingleton<IRestClientProvider>(p => p.GetRequiredService<DiscordSocketClient>())
             .AddSingleton<InteractionHandlingService>()
             .AddSingleton(new Listener(this, _client))
             .AddSingleton(new Logger(this))
