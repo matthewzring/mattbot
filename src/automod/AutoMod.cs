@@ -224,8 +224,51 @@ public class AutoMod
         if (!ShouldPerformAutomod(message.Author as SocketGuildUser, message.Channel))
             return;
 
+        // check the channel for channel-specific settings
+        string topic = (message.Channel as SocketTextChannel).Topic;
+        Boolean allowDiscussion = topic == null || !topic.ToLower().Contains("{-discussion}");
+
+        // detect status of different automod features
         AutomodStatus currentStatus = new();
+        if (!allowDiscussion)
+        {
+            await RunAntiDiscussion(currentStatus, message);
+        }
         await RunFilters(currentStatus, message);
+
+        // delete the message if applicable
+        if (currentStatus.deleteMessage)
+        {
+            try
+            {
+                await message.DeleteAsync();
+            }
+            catch (Exception) { }
+        }
+
+        // send a short 'warning' message that self-deletes
+        if (currentStatus.channelWarning != null)
+        {
+            try
+            {
+                IUserMessage msg = await message.Channel.SendMessageAsync($"{message.Author.Mention} {WARN} {currentStatus.channelWarning}");
+                await Task.Delay(2500);
+                await msg.DeleteAsync();
+            }
+            catch (Exception) { }
+        }
+    }
+
+    private async Task RunAntiDiscussion(AutomodStatus currentStatus, SocketMessage message)
+    {
+        string imageurl;
+        imageurl = message.Attachments?.FirstOrDefault()?.ProxyUrl;
+        if (imageurl is null)
+        {
+            currentStatus.AppendReason("Message contained no images");
+            currentStatus.channelWarning = "Please only post images in this channel.";
+            currentStatus.DeleteMessage();
+        }
     }
 
     private async Task RunFilters(AutomodStatus currentStatus, SocketMessage message)
@@ -274,6 +317,18 @@ public class AutoMod
 
     private class AutomodStatus
     {
-        private StringBuilder reason = new StringBuilder();
+        public bool deleteMessage = false;
+        public string channelWarning = null;
+        public StringBuilder reason = new StringBuilder();
+
+        public void DeleteMessage()
+        {
+            this.deleteMessage = true;
+        }
+
+        public void AppendReason(String input)
+        {
+            reason.Append(", ").Append(input);
+        }
     }
 }
