@@ -28,7 +28,8 @@ public class VerifyModule : InteractionModuleBase<SocketInteractionContext>
     public async Task VerifyAsync([Summary("id", "List of user IDs")] string userIDs,
                                   [Choice("National Finalist", "national-finalist"),
                                    Choice("International Finalist", "international-finalist"),
-                                   Choice("Finalist Coach/Mentor", "coach-mentor")]
+                                   Choice("Finalist Coach/Mentor", "coach-mentor"),
+                                   Choice("CCDC Nationals 2024", "nationals-2024")]
                                   [Summary("verify-as", "The type of verification. Leave blank for National Finalist")] string verificationType = "national-finalist")
     {
         StringBuilder sb = new StringBuilder();
@@ -53,6 +54,13 @@ public class VerifyModule : InteractionModuleBase<SocketInteractionContext>
                     SocketRole internationalFinalist = Context.Guild.GetRole(939197252512149626);
                     await user.AddRoleAsync(internationalFinalist);
                     break;
+                case "coach-mentor":
+                    break;
+                case "nationals-2024":
+                    SocketRole nationals2024 = Context.Guild.GetRole(1230979011543568559);
+                    await user.AddRoleAsync(nationals2024);
+                    sb.Append($"{SUCCESS} Role *Nationals 2024* given to {FormatUtil.formatUser(user)}\n");
+                    break;
                 default:
                     break;
             }
@@ -61,8 +69,8 @@ public class VerifyModule : InteractionModuleBase<SocketInteractionContext>
             if (finalists.GetUser(user.Id) != null)
             {
                 // TODO: add more verification options
-                SocketRole cpxvi = finalists.GetRole(1201674110477013032);
-                await finalists.GetUser(user.Id).AddRoleAsync(cpxvi);
+                SocketRole cp17 = finalists.GetRole(1334333263992459286);
+                await finalists.GetUser(user.Id).AddRoleAsync(cp17);
                 sb.Append($"{SUCCESS} Verified {FormatUtil.formatFullUser(user)}\n");
             }
             else

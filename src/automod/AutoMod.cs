@@ -75,6 +75,27 @@ public class AutoMod
                     catch (Exception) { }
                 }
             }
+
+            values = service.Spreadsheets.Values.Get("1utcTxVhse_COubLlGSJ06_ZV73IT6Xk5DYV2EPAjb4g", "Competitors!A1:A600").Execute().Values;
+            if (values is null || values.Count == 0)
+                return;
+
+            foreach (IList<object> row in values)
+            {
+                if (row.Count == 0)
+                    continue;
+
+                if (row[0].ToString() == user.Id.ToString())
+                {
+                    IRole competitor24 = user.Guild.GetRole(1241976115610910812);
+                    try
+                    {
+                        await user.AddRoleAsync(competitor24, new() { AuditLogReason = "Restoring 2024 Competitor Role" });
+                        return;
+                    }
+                    catch (Exception) { }
+                }
+            }
         }
         else if (user.Guild.Id == FINALISTS_ID)
         {
@@ -85,7 +106,7 @@ public class AutoMod
             }
             catch (Exception) { }
 
-            string[] ranges = { "CP-XVI!E3:E37", "CP-XVI!G3:G37", "CP-XVI!I3:I37", "CP-XVI!K3:K37", "CP-XVI!M3:M37", "CP-XVI!O3:O37", "CP-XVI!Q3:Q37", "CP-XVI!S3:S37" };
+            string[] ranges = { "CP-17!E3:E37", "CP-17!G3:G37", "CP-17!I3:I37", "CP-17!K3:K37", "CP-17!M3:M37", "CP-17!O3:O37", "CP-17!Q3:Q37", "CP-17!S3:S37" };
             foreach (string range in ranges)
             {
                 IList<IList<object>> values = service.Spreadsheets.Values.Get("1Hdi3Hrr-R-ipUOYjjH-2g3RzBsRJQpGwoRFWTcrT9DY", range).Execute().Values;
@@ -101,8 +122,8 @@ public class AutoMod
                     {
                         try
                         {
-                            IRole cpxvi = user.Guild.GetRole(1201674110477013032);
-                            await user.AddRoleAsync(cpxvi, new() { AuditLogReason = "Verified New User" });
+                            IRole cp17 = user.Guild.GetRole(1334333263992459286);
+                            await user.AddRoleAsync(cp17, new() { AuditLogReason = "Verified New User" });
                             await user.RemoveRoleAsync(quarantined, new() { AuditLogReason = "Unquarantining New User" });
                             return;
                         }
@@ -152,7 +173,7 @@ public class AutoMod
             return true;
 
         // ignore users the bot cant interact with
-        if (!PermissionUtil.canInteract(user.Guild.CurrentUser, user))
+        if (!PermissionUtil.CanInteract(user.Guild.CurrentUser, user))
             return false;
 
         // ignore users that can ban
@@ -196,7 +217,7 @@ public class AutoMod
             return false;
 
         // ignore users the bot cant interact with
-        if (!PermissionUtil.canInteract(member.Guild.CurrentUser, member))
+        if (!PermissionUtil.CanInteract(member.Guild.CurrentUser, member))
             return false;
 
         // ignore users that can kick

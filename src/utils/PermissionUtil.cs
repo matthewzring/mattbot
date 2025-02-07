@@ -33,7 +33,7 @@ public class PermissionUtil
     ///     Thrown if any of the provided parameters is {@code null}
     ///     or the provided entities are not from the same guild
     /// </exception>
-    public static bool canInteract(SocketGuildUser issuer, SocketGuildUser target)
+    public static bool CanInteract(SocketGuildUser issuer, SocketGuildUser target)
     {
         if (issuer == null)
             throw new ArgumentException("Issuer Member may not be null");
@@ -49,7 +49,7 @@ public class PermissionUtil
             return false;
         List<SocketRole> issuerRoles = issuer.Roles.ToList();
         List<SocketRole> targetRoles = target.Roles.ToList();
-        return issuerRoles.Any() && (!targetRoles.Any() || canInteract(issuerRoles.MaxBy(r => r.Position), targetRoles.MaxBy(r => r.Position)));
+        return issuerRoles.Any() && (!targetRoles.Any() || CanInteract(issuerRoles.MaxBy(r => r.Position), targetRoles.MaxBy(r => r.Position)));
     }
 
     /// <summary>
@@ -65,7 +65,7 @@ public class PermissionUtil
     ///     Thrown if any of the provided parameters is {@code null}
     ///     or the provided entities are not from the same guild
     /// </exception>
-    public static bool canInteract(SocketGuildUser issuer, SocketRole target)
+    public static bool CanInteract(SocketGuildUser issuer, SocketRole target)
     {
         if (issuer == null)
             throw new ArgumentException("Issuer Member may not be null");
@@ -78,7 +78,7 @@ public class PermissionUtil
         if (issuer.Id == guild.Owner.Id)
             return true;
         List<SocketRole> issuerRoles = issuer.Roles.ToList();
-        return issuerRoles.Any() && canInteract(issuerRoles.MaxBy(r => r.Position), target);
+        return issuerRoles.Any() && CanInteract(issuerRoles.MaxBy(r => r.Position), target);
     }
 
     /// <summary>
@@ -94,7 +94,7 @@ public class PermissionUtil
     ///     Thrown if any of the provided parameters is {@code null}
     ///     or the provided entities are not from the same guild
     /// </exception>
-    public static bool canInteract(SocketRole issuer, SocketRole target)
+    public static bool CanInteract(SocketRole issuer, SocketRole target)
     {
         if (issuer == null)
             throw new ArgumentException("Issuer Role may not be null");

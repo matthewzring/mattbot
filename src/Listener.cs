@@ -171,6 +171,10 @@ public class Listener
 
     private Task ClientOnReactionAdded(Cacheable<IUserMessage, ulong> arg1, Cacheable<IMessageChannel, ulong> arg2, SocketReaction arg3)
     {
+        // todo
+        if (ReactionAdded is not null)
+            _ = ReactionAdded(arg1, arg2, arg3);
+
         // Siginal the automod because a gem reaction was added
         Emoji gem = new("\uD83D\uDC8E"); // 💎
         if (arg3.Emote.Equals(gem))
