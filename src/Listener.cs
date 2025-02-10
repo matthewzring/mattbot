@@ -91,10 +91,14 @@ public class Listener
         _ = mattbot.Logger.LogGuildLeave(arg1, arg2);
 
         // Siginal the automod if a Nitro Booster left
-        SocketRole bRole = (arg2 as SocketGuildUser).Roles.FirstOrDefault(x => x.Name.Equals("Nitro Booster"));
-        if ((arg1.Id == CCDC_ID || arg1.Id == CYBERPATRIOT_ID) && bRole != null)
+        SocketGuildUser user = arg2 as SocketGuildUser;
+        if (user != null)
         {
-            _ = mattbot.AutoMod.DeleteColorRole(arg2 as SocketGuildUser);
+            SocketRole bRole = user.Roles.FirstOrDefault(x => x.Name.Equals("Nitro Booster"));
+            if ((arg1.Id == CCDC_ID || arg1.Id == CYBERPATRIOT_ID) && bRole != null)
+            {
+                _ = mattbot.AutoMod.DeleteColorRole(arg2 as SocketGuildUser);
+            }
         }
 
         return Task.CompletedTask;

@@ -53,9 +53,36 @@ public class AutoMod
             ApplicationName = "MattBot"
         });
 
+        bool kicking = false;
+        IList<IList<object>> values = service.Spreadsheets.Values.Get("1omqGLkegUgYs_g28zLm51cd8wwncqamF9_aUtnfrqFw", "Restricted!A2:A100").Execute().Values;
+        if (values is null || values.Count == 0)
+            return;
+
+        foreach (IList<object> row in values)
+        {
+            if (row.Count == 0)
+                continue;
+            if (row[0].ToString() == user.Id.ToString())
+            {
+                kicking = true;
+            }
+        }
+
+        if (kicking)
+        {
+            try
+            {
+                await user.SendMessageAsync($"Sorry, you are restricted from joining **{user.Guild.Name}** because of your membership in the Donkey Dojo. "
+                                            + "You may appeal your restriction [here](<https://unban.cypat.gg>). Sorry for the inconvenience.");
+                await user.KickAsync($"Restricted User");
+            }
+            catch (Exception) { }
+        }
+
+
         if (user.Guild.Id == ECITADEL_ID)
         {
-            IList<IList<object>> values = service.Spreadsheets.Values.Get("18LFfUXsLTsXmljfkOb4qf33ptiNs_aPju09A87l-rTc", "Competitors!A1:A500").Execute().Values;
+            values = service.Spreadsheets.Values.Get("18LFfUXsLTsXmljfkOb4qf33ptiNs_aPju09A87l-rTc", "Competitors!A1:A500").Execute().Values;
             if (values is null || values.Count == 0)
                 return;
 
@@ -109,7 +136,7 @@ public class AutoMod
             string[] ranges = { "CP-17!E3:E37", "CP-17!G3:G37", "CP-17!I3:I37", "CP-17!K3:K37", "CP-17!M3:M37", "CP-17!O3:O37", "CP-17!Q3:Q37", "CP-17!S3:S37" };
             foreach (string range in ranges)
             {
-                IList<IList<object>> values = service.Spreadsheets.Values.Get("1Hdi3Hrr-R-ipUOYjjH-2g3RzBsRJQpGwoRFWTcrT9DY", range).Execute().Values;
+                values = service.Spreadsheets.Values.Get("1Hdi3Hrr-R-ipUOYjjH-2g3RzBsRJQpGwoRFWTcrT9DY", range).Execute().Values;
                 if (values is null || values.Count == 0)
                     continue;
 
