@@ -22,14 +22,14 @@ namespace mattbot.modules.owner;
 
 [CyberPatriot]
 [DefaultMemberPermissions(GuildPermission.Administrator)]
+[RequireTeam]
 public class VerifyModule : InteractionModuleBase<SocketInteractionContext>
 {
     [SlashCommand("verify", "Verify a user")]
-    public async Task VerifyAsync([Summary("id", "List of user IDs")] string userIDs,
+    public async Task VerifyCyberPatriotAsync([Summary("id", "List of user IDs")] string userIDs,
                                   [Choice("National Finalist", "national-finalist"),
                                    Choice("International Finalist", "international-finalist"),
-                                   Choice("Finalist Coach/Mentor", "coach-mentor"),
-                                   Choice("CCDC Nationals 2024", "nationals-2024")]
+                                   Choice("Finalist Coach/Mentor", "coach-mentor")]
                                   [Summary("verify-as", "The type of verification. Leave blank for National Finalist")] string verificationType = "national-finalist")
     {
         StringBuilder sb = new StringBuilder();
@@ -37,10 +37,10 @@ public class VerifyModule : InteractionModuleBase<SocketInteractionContext>
 
         foreach (string userID in userIDs.Split(' '))
         {
-            SocketGuildUser user = Context.Client.GetGuild(CYBERPATRIOT_ID).GetUser(ulong.Parse(userID));
+            SocketGuildUser user = Context.Guild.GetUser(ulong.Parse(userID));
             if (user == null)
             {
-                sb.Append($"{ERROR} Could not find {FormatUtil.formatFullUser(user)}\n");
+                sb.Append($"{ERROR} Could not find `{userID}`\n");
                 continue;
             }
 
@@ -56,11 +56,6 @@ public class VerifyModule : InteractionModuleBase<SocketInteractionContext>
                     break;
                 case "coach-mentor":
                     break;
-                case "nationals-2024":
-                    SocketRole nationals2024 = Context.Guild.GetRole(1230979011543568559);
-                    await user.AddRoleAsync(nationals2024);
-                    sb.Append($"{SUCCESS} Role *Nationals 2024* given to {FormatUtil.formatUser(user)}\n");
-                    break;
                 default:
                     break;
             }
@@ -68,7 +63,6 @@ public class VerifyModule : InteractionModuleBase<SocketInteractionContext>
             SocketGuild finalists = Context.Client.GetGuild(FINALISTS_ID);
             if (finalists.GetUser(user.Id) != null)
             {
-                // TODO: add more verification options
                 SocketRole cp17 = finalists.GetRole(1334333263992459286);
                 await finalists.GetUser(user.Id).AddRoleAsync(cp17);
                 sb.Append($"{SUCCESS} Verified {FormatUtil.formatFullUser(user)}\n");
@@ -89,6 +83,44 @@ public class VerifyModule : InteractionModuleBase<SocketInteractionContext>
                 }
             }
         }
+        await ModifyOriginalResponseAsync(msg => msg.Content = $"{sb}");
+    }
+}
+
+[CCDC]
+[DefaultMemberPermissions(GuildPermission.Administrator)]
+[RequireTeam]
+public class Verify2Module : InteractionModuleBase<SocketInteractionContext>
+{
+    [SlashCommand("verify2", "Verify a user")]
+    public async Task VerifyCCDCAsync([Summary("id", "List of user IDs")] string userIDs,
+                                  [Choice("Nationals 2024", "nationals-2024")]
+                                  [Summary("verify-as", "The type of verification.")] string verificationType = "nationals-2024")
+    {
+        StringBuilder sb = new StringBuilder();
+        await RespondAsync($"{LOADING} Verifying users...\n");
+
+        foreach (string userID in userIDs.Split(' '))
+        {
+            SocketGuildUser user = Context.Guild.GetUser(ulong.Parse(userID));
+            if (user == null)
+            {
+                sb.Append($"{ERROR} Could not find {FormatUtil.formatFullUser(user)}\n");
+                continue;
+            }
+
+            switch (verificationType)
+            {
+                case "nationals-2024":
+                    SocketRole nationals2024 = Context.Guild.GetRole(1230979011543568559);
+                    await user.AddRoleAsync(nationals2024);
+                    sb.Append($"{SUCCESS} Role *Nationals 2024* given to {FormatUtil.formatUser(user)}\n");
+                    break;
+                default:
+                    break;
+            }
+        }
+
         await ModifyOriginalResponseAsync(msg => msg.Content = $"{sb}");
     }
 }

@@ -23,6 +23,7 @@ namespace mattbot.modules.owner;
 [Group("admin", "admin commands")]
 [CommandContextType(InteractionContextType.Guild)]
 [DefaultMemberPermissions(GuildPermission.Administrator)]
+[RequireTeam]
 public class AdminModule : InteractionModuleBase<SocketInteractionContext>
 {
     // admin shutdown

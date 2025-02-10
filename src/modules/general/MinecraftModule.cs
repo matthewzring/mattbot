@@ -21,6 +21,7 @@ using mattbot.utils;
 namespace mattbot.modules.general;
 
 [Ignore]
+[RequireTeam]
 public class MinecraftModule : InteractionModuleBase<SocketInteractionContext>
 {
     private static readonly string PICK = "\u26CF\uFE0F"; // ⛏️
