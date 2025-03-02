@@ -53,7 +53,7 @@ public class AutoMod
             ApplicationName = "MattBot"
         });
 
-        bool kicking = false;
+        bool banning = false;
         IList<IList<object>> values = service.Spreadsheets.Values.Get("1omqGLkegUgYs_g28zLm51cd8wwncqamF9_aUtnfrqFw", "Restricted!A2:A100").Execute().Values;
         if (values is null || values.Count == 0)
             return;
@@ -64,23 +64,23 @@ public class AutoMod
                 continue;
             if (row[0].ToString() == user.Id.ToString())
             {
-                kicking = true;
+                banning = true;
             }
         }
 
-        if (kicking)
+        if (banning)
         {
             try
             {
                 await user.SendMessageAsync($"Sorry, you are restricted from joining **{user.Guild.Name}** because of your membership in the Donkey Dojo. "
                                             + "You may appeal your restriction [here](<https://unban.cypat.gg>). Sorry for the inconvenience.");
-                await user.KickAsync($"Restricted User");
+                await mattbot._client.GetGuild(CYBERPATRIOT_ID).AddBanAsync(user, 0, "Restricted User");
+                await mattbot._client.GetGuild(CCDC_ID).AddBanAsync(user, 0, "Restricted User");
+                await mattbot._client.GetGuild(ECITADEL_ID).AddBanAsync(user, 0, "Restricted User");
             }
             catch (Exception) { }
         }
-
-
-        if (user.Guild.Id == ECITADEL_ID)
+        else if (user.Guild.Id == ECITADEL_ID)
         {
             values = service.Spreadsheets.Values.Get("18LFfUXsLTsXmljfkOb4qf33ptiNs_aPju09A87l-rTc", "Competitors!A1:A500").Execute().Values;
             if (values is null || values.Count == 0)
@@ -156,6 +156,29 @@ public class AutoMod
                         }
                         catch (Exception) { }
                     }
+                }
+            }
+        }
+        else if (user.Guild.Id == CCDC_ID)
+        {
+            values = service.Spreadsheets.Values.Get("1omqGLkegUgYs_g28zLm51cd8wwncqamF9_aUtnfrqFw", "CCDC!A2:A100").Execute().Values;
+            if (values is null || values.Count == 0)
+                return;
+
+            foreach (IList<object> row in values)
+            {
+                if (row.Count == 0)
+                    continue;
+
+                if (row[0].ToString() == user.Id.ToString())
+                {
+                    try
+                    {
+                        IRole restricted = user.Guild.GetRole(1180691738713661442);
+                        await user.AddRoleAsync(restricted, new() { AuditLogReason = "Restoring Restricted Role" });
+                        return;
+                    }
+                    catch (Exception) { }
                 }
             }
         }
