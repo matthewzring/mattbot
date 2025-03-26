@@ -94,8 +94,9 @@ public class Verify2Module : InteractionModuleBase<SocketInteractionContext>
 {
     [SlashCommand("verify2", "Verify a user")]
     public async Task VerifyCCDCAsync([Summary("id", "List of user IDs")] string userIDs,
-                                  [Choice("Nationals 2024", "nationals-2024")]
-                                  [Summary("verify-as", "The type of verification.")] string verificationType = "nationals-2024")
+                                  [Choice("Nationals 2025", "nationals-2025"),
+                                   Choice("Nationals 2024", "nationals-2024")]
+                                  [Summary("verify-as", "The type of verification.")] string verificationType = "nationals-2025")
     {
         StringBuilder sb = new StringBuilder();
         await RespondAsync($"{LOADING} Verifying users...\n");
@@ -111,6 +112,11 @@ public class Verify2Module : InteractionModuleBase<SocketInteractionContext>
 
             switch (verificationType)
             {
+                case "nationals-2025":
+                    SocketRole nationals2025 = Context.Guild.GetRole(1354250612535066795);
+                    await user.AddRoleAsync(nationals2025);
+                    sb.Append($"{SUCCESS} Role *Nationals 2025* given to {FormatUtil.formatUser(user)}\n");
+                    break;
                 case "nationals-2024":
                     SocketRole nationals2024 = Context.Guild.GetRole(1230979011543568559);
                     await user.AddRoleAsync(nationals2024);
