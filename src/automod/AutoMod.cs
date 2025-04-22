@@ -20,6 +20,9 @@ using mattbot.utils;
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Sheets.v4;
 using Google.Apis.Services;
+using mattbot.modules.general;
+using Microsoft.Extensions.Configuration;
+using System.Text.Json;
 
 
 namespace mattbot.automod;
@@ -30,10 +33,12 @@ namespace mattbot.automod;
 public class AutoMod
 {
     private readonly MattBot mattbot;
+    private readonly IConfiguration _configuration;
 
-    public AutoMod(MattBot mattbot)
+    public AutoMod(MattBot mattbot, IConfiguration configuration)
     {
         this.mattbot = mattbot;
+        _configuration = configuration;
     }
 
     public async Task UserJoin(IGuildUser user)
@@ -90,7 +95,7 @@ public class AutoMod
             {
                 if (row.Count == 0)
                     continue;
-                
+
                 if (row[0].ToString() == user.Id.ToString())
                 {
                     IRole competitor23 = user.Guild.GetRole(1112957783848001666);
@@ -123,6 +128,34 @@ public class AutoMod
                     catch (Exception) { }
                 }
             }
+
+            try
+            {
+                HttpClient httpClient = new HttpClient();
+                string apiUrl = "https://portal.ecitadel.org/auth/competitor/data/";
+                httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", _configuration["token"]);
+                var response = await httpClient.GetAsync(apiUrl);
+                if (response.IsSuccessStatusCode)
+                {
+                    var content = await response.Content.ReadAsStringAsync();
+                    var json = JsonDocument.Parse(content);
+                    var ids = json.RootElement.GetProperty("data").EnumerateArray()
+                               .Select(el => el.GetProperty("id").GetString())
+                               .ToHashSet();
+
+                    if (ids.Contains(user.Id.ToString()))
+                    {
+                        IRole competitor25 = user.Guild.GetRole(1356881350770163826);
+                        try
+                        {
+                            await user.AddRoleAsync(competitor25, new() { AuditLogReason = "Restoring 2025 Competitor Role" });
+                            return;
+                        }
+                        catch (Exception) { }
+                    }
+                }
+            }
+            catch (Exception) { }
         }
         else if (user.Guild.Id == FINALISTS_ID)
         {

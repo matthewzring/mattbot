@@ -65,7 +65,7 @@ public class MattBot
 
         // todo
         Logger = new Logger(this);
-        AutoMod = new AutoMod(this);
+        AutoMod = new AutoMod(this, _configuration);
     }
 
     static void Main(string[] args)
