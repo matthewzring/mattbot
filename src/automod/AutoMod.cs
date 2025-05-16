@@ -285,7 +285,7 @@ public class AutoMod
         catch (Exception) { }
     }
 
-    private bool ShouldPerformAutomod(SocketGuildUser member, ISocketMessageChannel channel)
+    private bool ShouldPerformAutomod(SocketGuildUser member, ISocketMessageChannel channel = null)
     {
         // ignore users not in the guild
         if (member.Guild.GetUser(member.Id) == null)
@@ -417,6 +417,25 @@ public class AutoMod
     {
         if (!ShouldCrowdmuteUser())
             return; 
+    }
+
+    public async Task OffboardUser(SocketGuildUser user)
+    {
+        // wait 1 minute
+        await Task.Delay(60000);
+
+        if (!ShouldPerformAutomod(user))
+            return;
+
+        // check if they still have the role
+        if (user.Roles.Any(x => x.Name == "Failed to Onboard"))
+        {
+            try
+            {
+                await user.KickAsync("Failed to Onboard");
+            }
+            catch (Exception) { }
+        }
     }
 
     private class AutomodStatus

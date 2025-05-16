@@ -108,15 +108,20 @@ public class Listener
     {
         if (arg2.Guild.Id == CCDC_ID || arg2.Guild.Id == CYBERPATRIOT_ID)
         {
-            // Siginal the automod if someone boosted the server
             IEnumerable<SocketRole> addedRoles = arg2.Roles.Except(arg1.Value.Roles);
+            // Signal the automod if a bot joined
+            if (addedRoles.Any(x => x.Name.Equals("Failed to Onboard")))
+            {
+                _ = mattbot.AutoMod.OffboardUser(arg2);
+            }
+            // Siginal the automod if someone boosted the server
             if (addedRoles.Any(x => x.Name.Equals("Nitro Booster")))
             {
                 _ = mattbot.AutoMod.CreateColorRole(arg2);
             }
 
-            // Siginal the automod if someone stopped boosting the server
             IEnumerable<SocketRole> removedRoles = arg1.Value.Roles.Except(arg2.Roles);
+            // Siginal the automod if someone stopped boosting the server
             if (removedRoles.Any(x => x.Name.Equals("Nitro Booster")))
             {
                 _ = mattbot.AutoMod.DeleteColorRole(arg2);
