@@ -102,7 +102,7 @@ public class AutoMod
                     try
                     {
                         await user.AddRoleAsync(competitor23, new() { AuditLogReason = "Restoring 2023 Competitor Role" });
-                        return;
+                        break;
                     }
                     catch (Exception) { }
                 }
@@ -123,7 +123,7 @@ public class AutoMod
                     try
                     {
                         await user.AddRoleAsync(competitor24, new() { AuditLogReason = "Restoring 2024 Competitor Role" });
-                        return;
+                        break;
                     }
                     catch (Exception) { }
                 }
@@ -138,18 +138,18 @@ public class AutoMod
                 if (response.IsSuccessStatusCode)
                 {
                     var content = await response.Content.ReadAsStringAsync();
-                    var json = JsonDocument.Parse(content);
-                    var ids = json.RootElement.GetProperty("data").EnumerateArray()
-                               .Select(el => el.GetProperty("id").GetString())
-                               .ToHashSet();
-
-                    if (ids.Contains(user.Id.ToString()))
+                    var data = JsonDocument.Parse(content).RootElement.GetProperty("data");
+                    foreach (var team in data.EnumerateArray())
                     {
+                        var competitors = team.GetProperty("competitors").EnumerateArray().Select(c => c.GetString()).ToList();
+                        if (!competitors.Contains(user.Id.ToString()))
+                            continue;
+
                         IRole competitor25 = user.Guild.GetRole(1356881350770163826);
                         try
                         {
                             await user.AddRoleAsync(competitor25, new() { AuditLogReason = "Restoring 2025 Competitor Role" });
-                            return;
+                            break;
                         }
                         catch (Exception) { }
                     }

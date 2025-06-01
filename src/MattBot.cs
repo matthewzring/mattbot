@@ -49,6 +49,7 @@ public class MattBot
 
         _services = new ServiceCollection()
             .AddSingleton(_configuration)
+            .AddSingleton<IConfiguration>(_configuration)
             .AddSingleton(_client)
             .AddSingleton<CommandService>()
             .AddSingleton<CommandHandlingService>()
