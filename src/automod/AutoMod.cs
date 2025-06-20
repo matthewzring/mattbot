@@ -421,8 +421,8 @@ public class AutoMod
 
     public async Task OffboardUser(SocketGuildUser user)
     {
-        // wait 1 minute
-        await Task.Delay(60000);
+        // wait 15 seconds
+        await Task.Delay(15000);
 
         if (!ShouldPerformAutomod(user))
             return;

@@ -106,14 +106,16 @@ public class Listener
 
     private Task ClientOnGuildMemberUpdated(Cacheable<SocketGuildUser, ulong> arg1, SocketGuildUser arg2)
     {
+        IEnumerable<SocketRole> addedRoles = arg2.Roles.Except(arg1.Value.Roles);
+
+        // Signal the automod if a bot joined
+        if (addedRoles.Any(x => x.Name.Equals("Failed to Onboard")))
+        {
+            _ = mattbot.AutoMod.OffboardUser(arg2);
+        }
+
         if (arg2.Guild.Id == CCDC_ID || arg2.Guild.Id == CYBERPATRIOT_ID)
         {
-            IEnumerable<SocketRole> addedRoles = arg2.Roles.Except(arg1.Value.Roles);
-            // Signal the automod if a bot joined
-            if (addedRoles.Any(x => x.Name.Equals("Failed to Onboard")))
-            {
-                _ = mattbot.AutoMod.OffboardUser(arg2);
-            }
             // Siginal the automod if someone boosted the server
             if (addedRoles.Any(x => x.Name.Equals("Nitro Booster")))
             {
