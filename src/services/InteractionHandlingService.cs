@@ -81,10 +81,10 @@ public class InteractionHandlingService
 
         ModuleInfo[] eCitadelCommands = _commands.Modules
             .Where(x => x.Attributes
-                .Any(y => y is eCitadelAttribute))
+                .Any(y => y is ECitadelAttribute))
             .ToArray();
-        RestGuild eCitadel = await _client.Rest.GetGuildAsync(ECITADEL_ID);
-        await _commands.AddModulesToGuildAsync(eCitadel, true, eCitadelCommands);
+        RestGuild ecitadel = await _client.Rest.GetGuildAsync(ECITADEL_ID);
+        await _commands.AddModulesToGuildAsync(ecitadel, true, eCitadelCommands);
 
         ModuleInfo[] finalistsCommands = _commands.Modules
             .Where(x => x.Attributes

@@ -20,7 +20,7 @@ using System.Text.Json;
 
 namespace mattbot.modules.general;
 
-[eCitadel]
+[ECitadel]
 [CommandContextType(InteractionContextType.Guild)]
 public class TicketModule : InteractionModuleBase<SocketInteractionContext>
 {

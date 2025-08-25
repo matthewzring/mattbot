@@ -19,6 +19,9 @@ using Discord.WebSocket;
 
 namespace mattbot.modules.general;
 
+[CCDC]
+[CyberPatriot]
+[ECitadel]
 [CommandContextType(InteractionContextType.Guild)]
 public class LMGTFYModule : InteractionModuleBase<SocketInteractionContext>
 {

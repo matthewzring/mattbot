@@ -34,7 +34,7 @@ public class Attributes
     }
 
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, AllowMultiple = false)]
-    public class eCitadelAttribute : Attribute
+    public class ECitadelAttribute : Attribute
     {
     }
 
