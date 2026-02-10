@@ -22,7 +22,6 @@ namespace mattbot.modules.owner;
 
 [CyberPatriot]
 [DefaultMemberPermissions(GuildPermission.Administrator)]
-[RequireTeam]
 public class VerifyModule : InteractionModuleBase<SocketInteractionContext>
 {
     [SlashCommand("verify", "Verify a user")]
@@ -63,8 +62,8 @@ public class VerifyModule : InteractionModuleBase<SocketInteractionContext>
             SocketGuild finalists = Context.Client.GetGuild(FINALISTS_ID);
             if (finalists.GetUser(user.Id) != null)
             {
-                SocketRole cp17 = finalists.GetRole(1334333263992459286);
-                await finalists.GetUser(user.Id).AddRoleAsync(cp17);
+                SocketRole cp18 = finalists.GetRole(1470442586283184270);
+                await finalists.GetUser(user.Id).AddRoleAsync(cp18);
                 sb.Append($"{SUCCESS} Verified {FormatUtil.formatFullUser(user)}\n");
             }
             else

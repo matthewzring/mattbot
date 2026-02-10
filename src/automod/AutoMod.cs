@@ -58,6 +58,7 @@ public class AutoMod
             ApplicationName = "MattBot"
         });
 
+        /*
         bool banning = false;
         IList<IList<object>> values = service.Spreadsheets.Values.Get("1omqGLkegUgYs_g28zLm51cd8wwncqamF9_aUtnfrqFw", "Restricted!A2:A100").Execute().Values;
         if (values is null || values.Count == 0)
@@ -85,7 +86,10 @@ public class AutoMod
             }
             catch (Exception) { }
         }
-        else if (user.Guild.Id == ECITADEL_ID)
+        */
+
+        IList<IList<object>> values;
+        if (user.Guild.Id == ECITADEL_ID)
         {
             values = service.Spreadsheets.Values.Get("18LFfUXsLTsXmljfkOb4qf33ptiNs_aPju09A87l-rTc", "Competitors!A1:A500").Execute().Values;
             if (values is null || values.Count == 0)
@@ -166,7 +170,7 @@ public class AutoMod
             }
             catch (Exception) { }
 
-            string[] ranges = { "CP-17!E3:E37", "CP-17!G3:G37", "CP-17!I3:I37", "CP-17!K3:K37", "CP-17!M3:M37", "CP-17!O3:O37", "CP-17!Q3:Q37", "CP-17!S3:S37" };
+            string[] ranges = { "CP-18!E3:E35", "CP-18!G3:G35", "CP-18!I3:I35", "CP-18!K3:K35", "CP-18!M3:M35", "CP-18!O3:O35", "CP-18!Q3:Q35", "CP-18!S3:S35" };
             foreach (string range in ranges)
             {
                 values = service.Spreadsheets.Values.Get("1Hdi3Hrr-R-ipUOYjjH-2g3RzBsRJQpGwoRFWTcrT9DY", range).Execute().Values;
@@ -182,8 +186,8 @@ public class AutoMod
                     {
                         try
                         {
-                            IRole cp17 = user.Guild.GetRole(1334333263992459286);
-                            await user.AddRoleAsync(cp17, new() { AuditLogReason = "Verified New User" });
+                            IRole cp18 = user.Guild.GetRole(1470442586283184270);
+                            await user.AddRoleAsync(cp18, new() { AuditLogReason = "Verified New User" });
                             await user.RemoveRoleAsync(quarantined, new() { AuditLogReason = "Unquarantining New User" });
                             return;
                         }

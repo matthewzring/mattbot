@@ -29,11 +29,13 @@ namespace mattbot;
 public class Globals
 {
     // Links
-    public static readonly string CYBERPATRIOT_SERVER_INVITE = "https://discord.gg/cyberpatriot";
+    public static readonly string CYBERPATRIOT_SERVER_INVITE = "https://discord.com/invite/FqPbspP";
+    public static readonly string VANITY_CYBERPATRIOT_SERVER_INVITE = "https://discord.gg/cyberpatriot";
     public static readonly string CCDC_SERVER_INVITE = "https://discord.gg/fFX7fJy6Vj";
+    public static readonly string VANITY_CCDC_SERVER_INVITE = "https://discord.gg/ccdc";
 
     // Strings
-    public static readonly string ERROR_MESSAGE = "An error occured: Please contact **matthewzring** for help.";
+    public static readonly string ERROR_MESSAGE = "An error occured: Please contact **matt** for help.";
 
     // People
     public static readonly ulong OWNER_ID = 349007194768801792;
