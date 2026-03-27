@@ -59,27 +59,34 @@ public class VerifyModule : InteractionModuleBase<SocketInteractionContext>
                     break;
             }
 
-            SocketGuild finalists = Context.Client.GetGuild(FINALISTS_ID);
-            if (finalists.GetUser(user.Id) != null)
+            if (verificationType == "national-finalist")
             {
-                SocketRole cp18 = finalists.GetRole(1470442586283184270);
-                await finalists.GetUser(user.Id).AddRoleAsync(cp18);
-                sb.Append($"{SUCCESS} Verified {FormatUtil.formatFullUser(user)}\n");
+                SocketGuild finalists = Context.Client.GetGuild(FINALISTS_ID);
+                if (finalists.GetUser(user.Id) != null)
+                {
+                    SocketRole cp18 = finalists.GetRole(1470442586283184270);
+                    await finalists.GetUser(user.Id).AddRoleAsync(cp18);
+                    sb.Append($"{SUCCESS} Verified {FormatUtil.formatFullUser(user)}\n");
+                }
+                else
+                {
+                    IInviteMetadata invite = await finalists.GetTextChannel(546405227092508685).CreateInviteAsync(maxAge: 86400, maxUses: 1, isUnique: true);
+                    try
+                    {
+                        await user.SendMessageAsync($"You have been succesfully verified as a finalist! You may join the **{finalists.Name}** server here:\n{invite}\n\n"
+                                                    + "This invite is valid for 24 hours following receipt of this message.");
+                        sb.Append($"{SUCCESS} Verified {FormatUtil.formatFullUser(user)}\n");
+                    }
+                    catch (Exception)
+                    {
+                        sb.Append($"{ERROR} Could not invite {FormatUtil.formatFullUser(user)}\n");
+                        await invite.DeleteAsync();
+                    }
+                }
             }
             else
             {
-                IInviteMetadata invite = await finalists.GetTextChannel(546405227092508685).CreateInviteAsync(maxAge: 86400, maxUses: 1, isUnique: true);
-                try
-                {
-                    await user.SendMessageAsync($"You have been succesfully verified as a finalist! You may join the **{finalists.Name}** server here:\n{invite}\n\n"
-                                                + "This invite is valid for 24 hours following receipt of this message.");
-                    sb.Append($"{SUCCESS} Verified {FormatUtil.formatFullUser(user)}\n");
-                }
-                catch (Exception)
-                {
-                    sb.Append($"{ERROR} Could not invite {FormatUtil.formatFullUser(user)}\n");
-                    await invite.DeleteAsync();
-                }
+                sb.Append($"{SUCCESS} Verified {FormatUtil.formatFullUser(user)}\n");
             }
         }
         await ModifyOriginalResponseAsync(msg => msg.Content = $"{sb}");
@@ -93,9 +100,10 @@ public class Verify2Module : InteractionModuleBase<SocketInteractionContext>
 {
     [SlashCommand("verify2", "Verify a user")]
     public async Task VerifyCCDCAsync([Summary("id", "List of user IDs")] string userIDs,
-                                  [Choice("Nationals 2025", "nationals-2025"),
+                                  [Choice("Nationals 2026", "nationals-2026"),
+                                   Choice("Nationals 2025", "nationals-2025"),
                                    Choice("Nationals 2024", "nationals-2024")]
-                                  [Summary("verify-as", "The type of verification.")] string verificationType = "nationals-2025")
+                                  [Summary("verify-as", "The type of verification.")] string verificationType = "nationals-2026")
     {
         StringBuilder sb = new StringBuilder();
         await RespondAsync($"{LOADING} Verifying users...\n");
@@ -111,6 +119,11 @@ public class Verify2Module : InteractionModuleBase<SocketInteractionContext>
 
             switch (verificationType)
             {
+                case "nationals-2026":
+                    SocketRole nationals2026 = Context.Guild.GetRole(1486153041232265340);
+                    await user.AddRoleAsync(nationals2026);
+                    sb.Append($"{SUCCESS} Role *Nationals 2026* given to {FormatUtil.formatUser(user)}\n");
+                    break;
                 case "nationals-2025":
                     SocketRole nationals2025 = Context.Guild.GetRole(1354250612535066795);
                     await user.AddRoleAsync(nationals2025);
