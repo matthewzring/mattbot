@@ -91,7 +91,7 @@ public class AutoMod
         IList<IList<object>> values;
         if (user.Guild.Id == ECITADEL_ID)
         {
-            values = service.Spreadsheets.Values.Get("18LFfUXsLTsXmljfkOb4qf33ptiNs_aPju09A87l-rTc", "Competitors!A1:A500").Execute().Values;
+            values = service.Spreadsheets.Values.Get("1TTLfDbt4Vh0_zViolC4kf0JYvznpR_mXp8Z__ju66s8", "Competitors!A2:A500").Execute().Values;
             if (values is null || values.Count == 0)
                 return;
 
@@ -112,7 +112,7 @@ public class AutoMod
                 }
             }
 
-            values = service.Spreadsheets.Values.Get("1utcTxVhse_COubLlGSJ06_ZV73IT6Xk5DYV2EPAjb4g", "Competitors!A1:A600").Execute().Values;
+            values = service.Spreadsheets.Values.Get("1TTLfDbt4Vh0_zViolC4kf0JYvznpR_mXp8Z__ju66s8", "Competitors!B2:B600").Execute().Values;
             if (values is null || values.Count == 0)
                 return;
 
@@ -127,6 +127,27 @@ public class AutoMod
                     try
                     {
                         await user.AddRoleAsync(competitor24, new() { AuditLogReason = "Restoring 2024 Competitor Role" });
+                        break;
+                    }
+                    catch (Exception) { }
+                }
+            }
+
+            values = service.Spreadsheets.Values.Get("1TTLfDbt4Vh0_zViolC4kf0JYvznpR_mXp8Z__ju66s8", "Competitors!C2:C600").Execute().Values;
+            if (values is null || values.Count == 0)
+                return;
+
+            foreach (IList<object> row in values)
+            {
+                if (row.Count == 0)
+                    continue;
+
+                if (row[0].ToString() == user.Id.ToString())
+                {
+                    IRole competitor25 = user.Guild.GetRole(1356881350770163826);
+                    try
+                    {
+                        await user.AddRoleAsync(competitor25, new() { AuditLogReason = "Restoring 2025 Competitor Role" });
                         break;
                     }
                     catch (Exception) { }
@@ -149,10 +170,10 @@ public class AutoMod
                         if (!competitors.Contains(user.Id.ToString()))
                             continue;
 
-                        IRole competitor25 = user.Guild.GetRole(1356881350770163826);
+                        IRole competitor26 = user.Guild.GetRole(1494570126396362772);
                         try
                         {
-                            await user.AddRoleAsync(competitor25, new() { AuditLogReason = "Restoring 2025 Competitor Role" });
+                            await user.AddRoleAsync(competitor26, new() { AuditLogReason = "Restoring 2026 Competitor Role" });
                             break;
                         }
                         catch (Exception) { }
