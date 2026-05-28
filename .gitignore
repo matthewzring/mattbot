@@ -9,3 +9,6 @@ Release/
 
 # Configuration files
 config.json
+
+# Claude
+.claude/
