@@ -124,8 +124,10 @@ public class TicketModule : InteractionModuleBase<SocketInteractionContext>
             .WithButton("Question",             customId: "ticket-question",     style: ButtonStyle.Primary, emote: new Emoji("❓"), row: 0)
             .WithButton("Team Registration",    customId: "ticket-registration", style: ButtonStyle.Primary, emote: new Emoji("📋"), row: 0)
             .WithButton("Competition Date",     customId: "ticket-date",         style: ButtonStyle.Primary, emote: new Emoji("📅"), row: 0)
-            .WithButton("VMRC Console",         customId: "ticket-vmrc",         style: ButtonStyle.Primary, emote: new Emoji("⌨️"), row: 1)
-            .WithButton("Reopen Closed Thread", customId: "ticket-reopen",       style: ButtonStyle.Primary, emote: new Emoji("📦"), row: 1);
+            .WithButton("Team Number",          customId: "ticket-team-number",  style: ButtonStyle.Primary, emote: new Emoji("🆔"), row: 1)
+            .WithButton("VPN Whitelist",        customId: "ticket-vpn",          style: ButtonStyle.Primary, emote: new Emoji("🛡️"), row: 1)
+            .WithButton("VMRC Console",         customId: "ticket-vmrc",         style: ButtonStyle.Primary, emote: new Emoji("⌨️"), row: 2)
+            .WithButton("Reopen Closed Thread", customId: "ticket-reopen",       style: ButtonStyle.Primary, emote: new Emoji("📦"), row: 2);
 
         await ReplyAsync(
             "# Request help or technical assistance\n" +
@@ -367,6 +369,33 @@ public class TicketInteractionsModule : InteractionModuleBase<SocketInteractionC
         await RespondWithModalAsync(modal.Build());
     }
 
+    [ComponentInteraction("ticket-vpn")]
+    public async Task HandleVpnButton()
+    {
+        var components = new ComponentBuilder()
+            .WithButton("Apply for VPN whitelist", customId: "ticket-vpn-apply", style: ButtonStyle.Primary, emote: new Emoji("🔓"));
+
+        await RespondAsync(
+            "# Sorry, but we don't allow VPN connections\n" +
+            "We limit traffic from VPN connections to combat spam and cheating.\n\n" +
+            "If you're encountering an error logging into the portal, check that you have disabled any VPN or proxy connections.\n" +
+            "You may also encounter this error using iCloud private relay on Apple devices.\n\n" +
+            "If you have a legitimate reason to use a VPN, you may be able to apply for an exemption. **Note that exemptions are rare and are not guaranteed.** You will be asked to provide proof.",
+            components: components.Build(),
+            ephemeral: true);
+    }
+
+    [ComponentInteraction("ticket-vpn-apply")]
+    public async Task HandleVpnApplyButton()
+    {
+        var modal = new ModalBuilder()
+            .WithTitle("🛡️ VPN Whitelist")
+            .WithCustomId("submit-ticket-vpn")
+            .AddTextInput("Reason", "reason", TextInputStyle.Paragraph,
+                placeholder: "Provide as much detail as possible. You can add more info (screenshots, etc.) after submitting.");
+        await RespondWithModalAsync(modal.Build());
+    }
+
     [ComponentInteraction("ticket-vmrc")]
     public async Task HandleVmrcButton()
     {
@@ -380,6 +409,14 @@ public class TicketInteractionsModule : InteractionModuleBase<SocketInteractionC
             "\n\nYou will need VMWare Workstation Player (Workstation Pro is not supported). You may need to change your default VMRC app to Player in the registry:",
             embed: embed, ephemeral: true);
     }
+
+    [ComponentInteraction("ticket-team-number")]
+    public async Task HandleTeamNumberButton()
+        => await RespondAsync(
+            "# Your team number is assigned after you start competing\n" +
+            "If the team number appears blank on the portal, don't worry — you haven't been assigned one yet.\n" +
+            "You will only be assigned a team number after you start competing. The team number will change between the practice round and competition.",
+            ephemeral: true);
 
     [ComponentInteraction("ticket-reopen")]
     public async Task HandleReopenButton()
@@ -403,6 +440,10 @@ public class TicketInteractionsModule : InteractionModuleBase<SocketInteractionC
     [ModalInteraction("submit-ticket-registration-sub")]
     public async Task CreateSubstitutionTicket(TicketRegistrationSubModal modal)
         => await CreateTicketAsync("requested team member substitution", "Discord IDs", modal.Ids);
+
+    [ModalInteraction("submit-ticket-vpn")]
+    public async Task CreateVpnTicket(TicketVpnModal modal)
+        => await CreateTicketAsync("requested a VPN whitelist", "Reason", modal.Reason);
 
     private async Task CreateTicketAsync(string action, string fieldLabel, string fieldValue)
     {
@@ -505,4 +546,12 @@ public class TicketRegistrationSubModal : IModal
 
     [ModalTextInput("ids")]
     public string Ids { get; set; }
+}
+
+public class TicketVpnModal : IModal
+{
+    public string Title => "🛡️ VPN Whitelist";
+
+    [ModalTextInput("reason")]
+    public string Reason { get; set; }
 }
