@@ -30,7 +30,7 @@ internal static class TicketShared
         "**👋 Welcome to your new ticket!**\n\n" +
         "**⏲️ We'll be here soon!** Typically we respond in a few minutes, but sometimes we might take a bit longer if the server is busy or if you have a particularly tricky issue.\n\n" +
         "**⏱️ We close idle tickets,** which makes them read-only. Once a ticket is closed it won't be reopened, but you can always create a new ticket if you have another issue.\n\n" +
-        "**📝 Have more to share?** If you have not fully explained your issue, please do so now. You may add more details, screenshots, videos, etc. below.";
+        "**📝 Have more to share?** If you have not fully explained your issue, please do so now. You may add more details, screenshots, videos, etc. below.\n​";
 
     public static async Task<JsonElement?> FetchPortalDataAsync(IConfiguration configuration)
     {
@@ -232,7 +232,7 @@ public class TicketModule : InteractionModuleBase<SocketInteractionContext>
             return;
         }
 
-        await RespondAsync("Ticket closed.");
+        await RespondAsync("Ticket closed.", ephemeral: true);
         await thread.ModifyAsync(t =>
         {
             t.Locked = true;
@@ -333,9 +333,8 @@ public class TicketInteractionsModule : InteractionModuleBase<SocketInteractionC
     public async Task HandleDateButton()
     {
         var components = new ComponentBuilder()
-            .WithButton("I want to compete earlier",    customId: "ticket-date-earlier", style: ButtonStyle.Primary, emote: new Emoji("⏱️"))
-            .WithButton("I want to compete later",      customId: "ticket-date-missed",  style: ButtonStyle.Primary, emote: new Emoji("⏰"))
-            .WithButton("I missed my competition date", customId: "ticket-date-missed",  style: ButtonStyle.Primary, emote: new Emoji("🛟"));
+            .WithButton("I want to compete earlier",                               customId: "ticket-date-earlier", style: ButtonStyle.Primary, emote: new Emoji("⏱️"))
+            .WithButton("I want to compete later or I missed my competition date", customId: "ticket-date-missed",  style: ButtonStyle.Primary, emote: new Emoji("🛟"));
 
         await RespondAsync(
             "# Use the portal to change your competition date\n" +
