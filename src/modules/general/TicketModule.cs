@@ -30,7 +30,9 @@ internal static class TicketShared
         "**👋 Welcome to your new ticket!**\n\n" +
         "**⏲️ We'll be here soon!** Typically we respond in a few minutes, but sometimes we might take a bit longer if the server is busy or if you have a particularly tricky issue.\n\n" +
         "**⏱️ We close idle tickets,** which makes them read-only. Once a ticket is closed it won't be reopened, but you can always create a new ticket if you have another issue.\n\n" +
-        "**📝 Have more to share?** If you have not fully explained your issue, please do so now. You may add more details, screenshots, videos, etc. below.\n​";
+        "**📝 Have more to share?** If you have not fully explained your issue, please do so now. You may add more details, screenshots, videos, etc. below.";
+    public const string TEAMMATES_TEXT =
+        "\n\n**👥 Missing teammates?** Use the button below to add them to this ticket.\n​";
 
     public static async Task<JsonElement?> FetchPortalDataAsync(IConfiguration configuration)
     {
@@ -197,7 +199,8 @@ public class TicketModule : InteractionModuleBase<SocketInteractionContext>
         await thread.SendMessageAsync(opening);
 
         var welcomeComponents = teamId != null ? TicketShared.BuildAddTeammatesComponents(teamId) : null;
-        await thread.SendMessageAsync(TicketShared.WELCOME_TEXT, components: welcomeComponents?.Build());
+        var welcomeText = welcomeComponents != null ? TicketShared.WELCOME_TEXT + TicketShared.TEAMMATES_TEXT : TicketShared.WELCOME_TEXT;
+        await thread.SendMessageAsync(welcomeText, components: welcomeComponents?.Build());
 
         if (hasUser)
         {
@@ -295,16 +298,16 @@ public class TicketInteractionsModule : InteractionModuleBase<SocketInteractionC
     public async Task HandleRegistrationCaptainButton()
     {
         var components = new ComponentBuilder()
-            .WithButton("I want to register a team late",   customId: "ticket-registration-late", style: ButtonStyle.Primary, emote: new Emoji("⏳"))
-            .WithButton("I want to substitute team members", customId: "ticket-registration-sub",  style: ButtonStyle.Primary, emote: new Emoji("🔄"));
+            .WithButton("I want to add or substitute team members", customId: "ticket-registration-sub", style: ButtonStyle.Primary, emote: new Emoji("➕"))
+            .WithButton("I want to register a team late",           customId: "ticket-registration-late", style: ButtonStyle.Primary, emote: new Emoji("⏳"));
 
         var component = (SocketMessageComponent)Context.Interaction;
         await component.UpdateAsync(m =>
         {
             m.Content =
                 "# The deadline to register has passed\n" +
-                "If you have already paid for a team, you can request to add or substitute team members. Changes are not guaranteed.\n\n" +
-                "If you do not have a team and would like to request late registration, open a ticket ASAP. Late registration is $40. Spots are limited and registration is not guaranteed.";
+                "If you have already paid for a team, you can request to add or substitute team members. Changes are not guaranteed.\n" +
+                "If you do not have a team and would like to request late registration, open a ticket ASAP. Late registration is $30. Spots are limited and registration is not guaranteed.";
             m.Components = components.Build();
         });
     }
@@ -315,8 +318,10 @@ public class TicketInteractionsModule : InteractionModuleBase<SocketInteractionC
         var modal = new ModalBuilder()
             .WithTitle("⏳ Late Registration")
             .WithCustomId("submit-ticket-registration-late")
+            .AddTextInput("Explanation", "explanation", TextInputStyle.Paragraph,
+                placeholder: "Provide an explanation of what you are trying to do.")
             .AddTextInput("Discord IDs", "ids", TextInputStyle.Paragraph,
-                placeholder: "List the Discord IDs of all the members on the team");
+                placeholder: "List the Discord IDs of all the members on the team.");
         await RespondWithModalAsync(modal.Build());
     }
 
@@ -324,10 +329,12 @@ public class TicketInteractionsModule : InteractionModuleBase<SocketInteractionC
     public async Task HandleRegistrationSubButton()
     {
         var modal = new ModalBuilder()
-            .WithTitle("🔄 Substitute Members")
+            .WithTitle("➕ Add/Substitute Members")
             .WithCustomId("submit-ticket-registration-sub")
+            .AddTextInput("Explanation", "explanation", TextInputStyle.Paragraph,
+                placeholder: "Provide an explanation of what you are trying to do.")
             .AddTextInput("Discord IDs", "ids", TextInputStyle.Paragraph,
-                placeholder: "List the Discord IDs of the teammates being substituted");
+                placeholder: "List the Discord IDs of the teammates being added or substituted.");
         await RespondWithModalAsync(modal.Build());
     }
 
@@ -422,7 +429,7 @@ public class TicketInteractionsModule : InteractionModuleBase<SocketInteractionC
     public async Task HandleReopenButton()
         => await RespondAsync(
             "# Please start a new thread; we don't reopen closed threads\n" +
-            "If you would like to view the contents of a closed ticket, click the 🧵 **Threads** icon at the top of this channel.",
+            "If you would like to view the contents of a closed ticket, click the **🧵 Threads** icon at the top of this channel.",
             ephemeral: true);
 
     [ModalInteraction("submit-ticket")]
@@ -435,17 +442,22 @@ public class TicketInteractionsModule : InteractionModuleBase<SocketInteractionC
 
     [ModalInteraction("submit-ticket-registration-late")]
     public async Task CreateLateRegistrationTicket(TicketRegistrationLateModal modal)
-        => await CreateTicketAsync("requested late team registration", "Discord IDs", modal.Ids);
+        => await CreateTicketAsync("requested late team registration",
+            ("Explanation", modal.Explanation), ("Discord IDs", modal.Ids));
 
     [ModalInteraction("submit-ticket-registration-sub")]
     public async Task CreateSubstitutionTicket(TicketRegistrationSubModal modal)
-        => await CreateTicketAsync("requested team member substitution", "Discord IDs", modal.Ids);
+        => await CreateTicketAsync("requested team member substitution",
+            ("Explanation", modal.Explanation), ("Discord IDs", modal.Ids));
 
     [ModalInteraction("submit-ticket-vpn")]
     public async Task CreateVpnTicket(TicketVpnModal modal)
         => await CreateTicketAsync("requested a VPN whitelist", "Reason", modal.Reason);
 
-    private async Task CreateTicketAsync(string action, string fieldLabel, string fieldValue)
+    private Task CreateTicketAsync(string action, string fieldLabel, string fieldValue)
+        => CreateTicketAsync(action, (fieldLabel, fieldValue));
+
+    private async Task CreateTicketAsync(string action, params (string Label, string Value)[] fields)
     {
         await DeferAsync(ephemeral: true);
 
@@ -464,13 +476,15 @@ public class TicketInteractionsModule : InteractionModuleBase<SocketInteractionC
         }
 
         var thread = await channel.CreateThreadAsync(name: name, type: ThreadType.PrivateThread);
-        await thread.SendMessageAsync($"{Context.User.Mention} {action}:\n\n**{fieldLabel}**\n{fieldValue}");
+        var fieldText = string.Join("\n\n", fields.Select(f => $"**{f.Label}**\n{f.Value}"));
+        await thread.SendMessageAsync($"{Context.User.Mention} {action}:\n\n{fieldText}");
 
         await thread.AddUserAsync(Context.Guild.GetUser(TicketShared.STAFF_MATT_ID));
         await thread.AddUserAsync(Context.Guild.GetUser(TicketShared.STAFF_KALI_ID));
 
         var welcomeComponents = teamId != null ? TicketShared.BuildAddTeammatesComponents(teamId) : null;
-        await thread.SendMessageAsync(TicketShared.WELCOME_TEXT, components: welcomeComponents?.Build());
+        var welcomeText = welcomeComponents != null ? TicketShared.WELCOME_TEXT + TicketShared.TEAMMATES_TEXT : TicketShared.WELCOME_TEXT;
+        await thread.SendMessageAsync(welcomeText, components: welcomeComponents?.Build());
 
         await FollowupAsync($"New ticket created: {thread.Mention}", ephemeral: true);
     }
@@ -536,13 +550,19 @@ public class TicketRegistrationLateModal : IModal
 {
     public string Title => "⏳ Late Registration";
 
+    [ModalTextInput("explanation")]
+    public string Explanation { get; set; }
+
     [ModalTextInput("ids")]
     public string Ids { get; set; }
 }
 
 public class TicketRegistrationSubModal : IModal
 {
-    public string Title => "🔄 Substitute Members";
+    public string Title => "➕ Add/Substitute Members";
+
+    [ModalTextInput("explanation")]
+    public string Explanation { get; set; }
 
     [ModalTextInput("ids")]
     public string Ids { get; set; }
