@@ -198,6 +198,9 @@ public class TicketModule : InteractionModuleBase<SocketInteractionContext>
             : $"Ticket opened for team {team}.";
         await thread.SendMessageAsync(opening);
 
+        await thread.AddUserAsync(Context.Guild.GetUser(TicketShared.STAFF_MATT_ID));
+        await thread.AddUserAsync(Context.Guild.GetUser(TicketShared.STAFF_KALI_ID));
+
         var welcomeComponents = teamId != null ? TicketShared.BuildAddTeammatesComponents(teamId) : null;
         var welcomeText = welcomeComponents != null ? TicketShared.WELCOME_TEXT + TicketShared.TEAMMATES_TEXT : TicketShared.WELCOME_TEXT;
         await thread.SendMessageAsync(welcomeText, components: welcomeComponents?.Build());
@@ -216,9 +219,6 @@ public class TicketModule : InteractionModuleBase<SocketInteractionContext>
                 if (captain != null) await thread.AddUserAsync(captain);
             }
         }
-
-        await thread.AddUserAsync(Context.Guild.GetUser(TicketShared.STAFF_MATT_ID));
-        await thread.AddUserAsync(Context.Guild.GetUser(TicketShared.STAFF_KALI_ID));
 
         await FollowupAsync($"Created {thread.Mention}", ephemeral: true);
     }
@@ -289,7 +289,7 @@ public class TicketInteractionsModule : InteractionModuleBase<SocketInteractionC
 
         await RespondAsync(
             "# Please have the team captain open a ticket\n" +
-            "The team captain is the one who pays for the team. If you are not the captain, please ask the captain to open this ticket.",
+            "The team captain is the one who pays for the team. If you are not the captain, please ask the captain to open this ticket (even if you are the one trying to get added to a team).",
             components: components.Build(),
             ephemeral: true);
     }
@@ -346,8 +346,8 @@ public class TicketInteractionsModule : InteractionModuleBase<SocketInteractionC
             .WithButton("I want to compete later or I missed my competition date", customId: "ticket-date-missed",  style: ButtonStyle.Primary, emote: new Emoji("🛟"));
 
         await RespondAsync(
-            "# Use the portal to change your competition date\n" +
-            "The team captain can select the preferred competition date on the portal. Choose the date you will start competing, even if the 6 hour competition window overlaps into the next morning.\n\n" +
+            "# View your assigned competition date on the portal\n" +
+            "You may start your 6 hour competition window at any time on your assigned date (even if it overlaps into the next morning).\n" +
             "Once you start competing you will have the full 6 hours to work on all virtual machines and challenges, but you must finish all your work by <t:1780977540:F>.",
             components: components.Build(), ephemeral: true);
     }
